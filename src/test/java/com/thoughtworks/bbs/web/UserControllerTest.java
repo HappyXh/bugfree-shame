@@ -218,12 +218,14 @@ public class UserControllerTest {
     @Test
     public void shouldDeleteThePost() {
         Post aPost = new Post();
+        aPost.setPostId(1L);
+        when(postService.get(1L)).thenReturn(aPost);
         when(request.getParameter("deletePost")).thenReturn("1");
 
         expected = new ModelAndView("user/profile");
         result = userController.processDeletePost(request, principal, new ModelMap());
 
-        verify(postService).deleteAllPostsByMainPost(Long.parseLong("1"));
+        verify(postService).delete(aPost);
         verify(postService).findMainPostByAuthorNameSortedByCreateTime(principal.getName());
 
 
@@ -239,15 +241,25 @@ public class UserControllerTest {
         assertEquals("page should stay user/users", expected.getViewName(), result.getViewName());
     }
 
+    @Test
+    public void shouldJumpToUsersAfterDisableUserSuccess(){
+        expected = new ModelAndView("redirect:users");
+        result = userController.processUserDisable(request, new ModelMap());
+
+        verify(userService).disable(any(User.class));
+        assertEquals("page should be at user/users", expected.getViewName(), result.getViewName());
+
+    }
+
     private class UserMatcher extends ArgumentMatcher<User> {
 
         @Override
         public boolean matches(Object arg) {
             if( null == arg || !(arg instanceof User) )
-            return  false;
-    return ((User) arg).getUserName().equals("username");
-}
-}
+                 return  false;
+            return ((User) arg).getUserName().equals("username");
+         }
+    }
 
     class IsSameUserWith extends ArgumentMatcher<User> {
         private User user;
@@ -276,17 +288,17 @@ public class UserControllerTest {
 
     }
 
-    class UserRoleMatcher extends ArgumentMatcher<UserRole> {
-        private UserRole userRole;
+    @Test
+    public void shouldDeletePostWhenClickDeleteAndUserIsShowUser() {
+        Post aPost = new Post();
+        aPost.setPostId(1L);
+        when(postService.get(1L)).thenReturn(aPost);
+        when(request.getParameter("deletePost")).thenReturn("1");
+        expected = new ModelAndView("user/profile");
+        result = userController.DeletePost(request, principal, new ModelMap());
 
-        UserRoleMatcher(UserRole userRole) {
-            this.userRole = userRole;
-        }
-
-        @Override
-        public boolean matches(Object userroleToMatch) {
-            return ((UserRole) userroleToMatch).getUserId().equals(userRole.getUserId())
-                    && ((UserRole) userroleToMatch).getRoleName().equals(userRole.getRoleName());
-        }
+        verify(postService).delete(aPost);
+        verify(postService).findMainPostByAuthorNameSortedByCreateTime(principal.getName());
     }
+
 }

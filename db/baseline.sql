@@ -18,11 +18,11 @@
 -- Table structure for table `post`
 --
 
-DROP DATABASE IF EXISTS `bbs`;
+DROP DATABASE IF EXISTS `bbs_a`;
 
-CREATE DATABASE `bbs` character set utf8;
+CREATE DATABASE `bbs_a` character set utf8;
 
-USE `bbs`;
+USE `bbs_a`;
 
 DROP TABLE IF EXISTS `post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -37,6 +37,8 @@ CREATE TABLE `post` (
   `modify_time` datetime NOT NULL,
   `creator_id` int(11) NOT NULL,
   `modifier_id` int(11) NOT NULL,
+  `liked_time` int(11) NOT NULL,
+  `top` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -49,6 +51,51 @@ LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- Table structure for table `user_roles`
+--
+DROP TABLE IF EXISTS `likes_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `likes_table` (
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLE `likes_table` WRITE;
+/*!40000 ALTER TABLE `likes_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `likes_table` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `user_roles`
+--
+DROP TABLE IF EXISTS `tags_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tags_table` (
+    `post_id` int(11) NOT NULL,
+    `tag` varchar(100) NOT NULL
+)   ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLE `tags_table` WRITE;
+/*!40000 ALTER TABLE `tags_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tags_table` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `user_roles`

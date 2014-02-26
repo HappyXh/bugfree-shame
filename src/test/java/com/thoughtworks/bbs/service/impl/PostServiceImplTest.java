@@ -36,6 +36,8 @@ public class PostServiceImplTest {
 
         postBuilder = new PostBuilder();
         postBuilder.author("juntao").title("Introduce to TDD").content("ssss");
+
+
     }
 
     @Test
@@ -81,16 +83,23 @@ public class PostServiceImplTest {
 
     @Test
     public void shouldGetAllPostsOrderByTime() {
-        List<Post> expectedPostList = new ArrayList<Post>();
-        expectedPostList.add(new Post());
-        expectedPostList.add(new Post());
-        expectedPostList.add(new Post());
-        when(mapper.findAllPostsOrderByTime()).thenReturn(expectedPostList);
+        List<Post> expectedNormalPostList = new ArrayList<Post>();
+        expectedNormalPostList.add(new Post());
+        expectedNormalPostList.add(new Post());
+        List<Post> expectedTopmostPostList = new ArrayList<Post>();
+        expectedTopmostPostList.add(new Post());
+        when(mapper.findAllNormalPostsOrderByTime()).thenReturn(expectedNormalPostList);
+        when(mapper.findAllTopmostPostsOrderByTime()).thenReturn(expectedTopmostPostList);
+
+        List<Post> expectedAllPostList = new ArrayList<Post>();
+        expectedAllPostList.addAll(expectedTopmostPostList);
+        expectedAllPostList.addAll(expectedNormalPostList);
 
         List<Post> returnedPostList = postService.findAllPostsOrderByTime();
 
-        verify(mapper).findAllPostsOrderByTime();
-        assertThat(returnedPostList, is(expectedPostList));
+        verify(mapper).findAllNormalPostsOrderByTime();
+        verify(mapper).findAllTopmostPostsOrderByTime();
+        assertThat(returnedPostList, is(expectedAllPostList));
     }
 
     @Test
@@ -115,5 +124,40 @@ public class PostServiceImplTest {
         verify(mapper).findMainPostByAuthorName(authorName);
     }
 
+    @Test
+    public void shouldGetPostIDbyNameAndTime()
+    {
+        Date date_1 = new Date();
+        date_1.setTime(1);
+        Post post1 = new Post().setAuthorName("juntao").setTitle("1").setContent("content1").setCreateTime(date_1)
+                .setModifyTime(new Date()).setCreatorId(1L).setModifierId(1L).setParentId(0);
+        when(mapper.getPostIDByNameAndTime("juntao", date_1)).thenReturn(1L);
 
+        Long result = postService.getPostIdByAuthorAndCreateTime("juntao", date_1);
+        assertThat(result, is(1L));
+        verify(mapper).getPostIDByNameAndTime("juntao", date_1);
+
+    }
+
+    @Test
+    public void shouldGetSearchResult(){
+
+        List<Post> expectedPostList = new ArrayList<Post>();
+        expectedPostList.add(new Post());
+        when(mapper.searchPost("%huan%","%TDD%","%TDD%","1992-10-11","5555-12-19")).thenReturn(expectedPostList);
+        List<Post> returnedPostList = postService.searchPost("huan","TDD","TDD","1992-10-11","5555-12-18");
+        verify(mapper).searchPost("%huan%","%TDD%","%TDD%","1992-10-11","5555-12-19");
+        assertThat(returnedPostList, is(expectedPostList));
+
+    }
+
+    @Test
+    public void shouldUpdatePostWhenSetTopmost(){
+        Post post = new Post();
+        when(mapper.get(Long.parseLong("123"))).thenReturn(post);
+
+        postService.setTopMostPost("123");
+
+        verify(mapper).update(post);
+    }
 }

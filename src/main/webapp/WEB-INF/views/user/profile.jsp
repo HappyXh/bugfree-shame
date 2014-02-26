@@ -30,7 +30,7 @@
 <div id="userInformation">
     <table class="table">
         <tr>
-            <td>Name</td>
+            <th class="first">Name</th>
             <c:if test="${empty showUser}">
                 <td>${user.userName}</td>
             </c:if>
@@ -39,27 +39,34 @@
             </c:if>
         </tr>
         <tr>
-            <td>Enable</td>
+            <th class="first">Enable</th>
             <td>${user.enabled}</td>
         </tr>
     </table>
 
+    <div class="table">
 
-        <c:if test="${showUser.id==user.id}">
-            <a href="changePassword">Change Password</a>
-            <a href="updateProfile">Update Profile</a>
-        </c:if>
-        <c:if test="${empty showUser}">
-            <a href="changePassword">Change Password</a>
-            <a href="updateProfile">Update Profile</a>
-        </c:if>
+            <c:if test="${showUser.id==user.id}">
+                <a href="changePassword">Change Password</a>
+                <span id="line"></span>
+                <a href="updateProfile">Update Profile</a>
+            </c:if>
+
+            <c:if test="${empty showUser}">
+                <a href="changePassword">Change Password</a>
+                <span id="line"></span>
+                <a href="updateProfile">Update Profile</a>
+            </c:if>
+
+
+    </div>
 
 </div>
 
 <div id="myPost">
     <c:choose>
     <c:when test="${empty showUser}">
-         <h2>My Posts</h2>
+         <h2 size=24px>My Posts</h2>
     </c:when>
     <c:otherwise>
        <c:if test="${showUser.id!=user.id}">
@@ -73,11 +80,24 @@
 
     <table class="table table-striped">
         <thead>
-        <tr>
+        <tr class="first">
             <th>Title</th>
             <th>Author</th>
             <th>Publish Time</th>
-            <th>Delete</th>
+            <c:choose>
+                <c:when test="${empty showUser}">
+                     <th>Operations</th>
+                </c:when>
+                <c:otherwise>
+                   <c:if test="${showUser.id==user.id}">
+                       <th>Operations</th>
+                   </c:if>
+                    <c:if test="${showUser.id!=user.id}">
+
+                    </c:if>
+                </c:otherwise>
+            </c:choose>
+
         </tr>
         </thead>
         <tbody>
@@ -94,7 +114,18 @@
                 <td><c:out value="${post.authorName}"/></td>
                 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
                 <td><fmt:formatDate value="${post.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                <td><a href="javascript:void(0)" onclick="show_confirm('${post.postId}');">X</a></td>
+
+                 <c:choose>
+                    <c:when test="${empty showUser}">
+                         <td><a href="javascript:void(0)" onclick="show_confirm('${post.postId}');">X</a></td>
+                    </c:when>
+                         <c:otherwise>
+                            <c:if test="${showUser.id==user.id}">
+                               <td><a href="javascript:void(0)" onclick="show_confirm('${post.postId}');">X</a></td>
+                            </c:if>
+                         </c:otherwise>
+                 </c:choose>
+
             </tr>
         </c:forEach>
         </tbody>

@@ -10,10 +10,7 @@ import com.thoughtworks.bbs.service.UserService;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserServiceImpl implements UserService {
     private UserValidator validator;
@@ -34,8 +31,6 @@ public class UserServiceImpl implements UserService {
         try{
             UserMapper mapper = session.getMapper(UserMapper.class);
             user = mapper.findByUserId(id);
-            if(user == null)
-                System.out.println("user is null");
         } finally {
             session.close();
         }
@@ -61,26 +56,26 @@ public class UserServiceImpl implements UserService {
     public ServiceResult<User> save(User user) {
         Map<String, String> errors = validator.validate(user);
         SqlSession session = factory.openSession();
-
         if(errors.isEmpty()) {
             try{
                 UserMapper userMapper = session.getMapper(UserMapper.class);
-                UserRoleMapper userRoleMapper = session.getMapper(UserRoleMapper.class);
+                User duplicateUser = userMapper.findByUsername(user.getUserName());
+                if(duplicateUser!=null){
+                    errors.put("username", "This username <span class='span-name'>"+user.getUserName()+"</span> is so popular, please change another!");
+                }else{
+                    userMapper.insert(user);
+                    UserRoleMapper userRoleMapper = session.getMapper(UserRoleMapper.class);
+                    UserRole userRole = new UserRole();
+                    userRole.setUserId(user.getId());
+                    userRole.setRoleName(ROLE_REGULAR);
+                    userRoleMapper.insert(userRole);
+                    session.commit();
+                }
 
-                userMapper.insert(user);
-
-                UserRole userRole = new UserRole();
-                userRole.setUserId(user.getId());
-                userRole.setRoleName(ROLE_REGULAR);
-
-                userRoleMapper.insert(userRole);
-
-                session.commit();
             } finally {
                 session.close();
             }
         }
-
         return new ServiceResult<User>(errors, user);
     }
 
@@ -107,7 +102,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public ServiceResult<User> update(User user) {
         SqlSession session = factory.openSession();
-        ServiceResult<User> serviceResult = null;
         Map<String, String> errors = validator.validate(user);
 
         if(errors.isEmpty()) {
@@ -115,15 +109,12 @@ public class UserServiceImpl implements UserService {
                 UserMapper mapper = session.getMapper(UserMapper.class);
                 mapper.update(user);
                 session.commit();
-            }catch (Exception e) {
-                errors.put("SqlError", e.getMessage());
             }
             finally {
                 session.close();
             }
         }
-        serviceResult = new ServiceResult<User>(errors, user);
-        return serviceResult;
+        return new ServiceResult<User>(errors, user);
     }
 
     @Override
@@ -157,7 +148,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<User,String> getAllUsersWithRole(){
         List<User> users = getAll();
-        Map <User,String> userWithRole= new HashMap<User,String>();
+        Map <User,String> userWithRole= new TreeMap<User,String>(new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return (int)(user1.getId()-user2.getId());
+            }
+        });
         SqlSession session = factory.openSession();
 
         try{
@@ -192,6 +188,16 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = getUserRoleById(userId);
         userRole.setRoleName(ROLE_ADMIN);
         updateUserRole(userRole);
+    }
+
+    @Override
+    public boolean disable(User user) {
+        if( user != null && user.isEnabled()) {
+            user.setEnabled(false);
+            if(!update(user).hasErrors())
+                return true;
+        }
+        return false;
     }
 
 

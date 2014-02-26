@@ -8,6 +8,9 @@ import com.thoughtworks.bbs.service.ServiceResult;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PostServiceImpl implements PostService {
@@ -75,6 +78,12 @@ public class PostServiceImpl implements PostService {
 
         try {
             PostMapper postMapper = session.getMapper(PostMapper.class);
+            if(post.getParentId().equals(0L)) {
+                List<Post> subPosts = findAllPostByMainPost(post.getPostId());
+                for (Post subPost : subPosts) {
+                    postMapper.delete(subPost);
+                }
+            }
             postMapper.delete(post);
             session.commit();
         } finally {
@@ -105,7 +114,8 @@ public class PostServiceImpl implements PostService {
 
         try {
             PostMapper postMapper = session.getMapper(PostMapper.class);
-            posts = postMapper.findAllPostsOrderByTime();
+            posts = postMapper.findAllTopmostPostsOrderByTime();
+            posts.addAll(postMapper.findAllNormalPostsOrderByTime());
         } finally {
             session.close();
         }
@@ -127,12 +137,67 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteAllPostsByMainPost(Long postId) {
-        List<Post> allPosts = findAllPostByMainPost(postId);
-        for(Post p : allPosts)
+    public Long getPostIdByAuthorAndCreateTime(String name, Date time) {
+
+        SqlSession session = factory.openSession();
+        try
         {
-            delete(p);
+            PostMapper postMapper = session.getMapper(PostMapper.class);
+            return postMapper.getPostIDByNameAndTime(name, time);
+        } finally {
+            session.close();
         }
     }
 
+    @Override
+    public List<Post> searchPost(String author, String title, String content, String start, String end) {
+        if(author == null) author = "";
+        if(title == null) title = "";
+        if(content == null) content = "";
+        if(start == null||start == "" ) start = "1949-10-1";
+        if(end == null || end == "") end = "9999-12-30";
+        author = addFilter(author);
+        title = addFilter(title);
+        content = addFilter(content);
+        end = addOneDay(end);
+        SqlSession session = factory.openSession();
+        PostMapper postMapper = session.getMapper(PostMapper.class);
+        List<Post> posts = postMapper.searchPost(author, title, content, start, end);
+        session.close();
+        return posts;
+    }
+
+    private String addFilter(String param){
+        if(param == null) param = "";
+        return "%"+param+"%";
+    }
+
+    private String addOneDay(String dateStr){
+        DateFormat dm = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = dm.parse(dateStr);
+            Calendar c =Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.DATE, 1);
+            date = c.getTime();
+            dateStr = dm.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateStr;
+    }
+
+    @Override
+    public void setTopMostPost(String postID) {
+        SqlSession session = factory.openSession();
+        try {
+            PostMapper postMapper = session.getMapper(PostMapper.class);
+            Post post = postMapper.get(Long.parseLong(postID));
+            post.setTop(true);
+            postMapper.update(post);
+            session.commit();
+        } finally {
+            session.close();
+        }
+    }
 }

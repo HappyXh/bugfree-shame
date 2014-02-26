@@ -1,10 +1,13 @@
 package com.thoughtworks.bbs.web;
 
 import com.thoughtworks.bbs.model.Post;
+import com.thoughtworks.bbs.model.PostLike;
 import com.thoughtworks.bbs.model.User;
-import com.thoughtworks.bbs.model.UserRole;
+import com.thoughtworks.bbs.service.PostLikeService;
 import com.thoughtworks.bbs.service.PostService;
+import com.thoughtworks.bbs.service.ServiceResult;
 import com.thoughtworks.bbs.service.UserService;
+import com.thoughtworks.bbs.service.impl.PostLikeServiceImpl;
 import com.thoughtworks.bbs.service.impl.PostServiceImpl;
 import com.thoughtworks.bbs.service.impl.UserServiceImpl;
 import com.thoughtworks.bbs.util.MyBatisUtil;
@@ -25,16 +28,20 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
     private UserService userService;
     private PostService postService;
+    private PostLikeService postLikeService;
 
     public UserController() {
         userService = new UserServiceImpl(MyBatisUtil.getSqlSessionFactory());
         postService = new PostServiceImpl(MyBatisUtil.getSqlSessionFactory());
+        postLikeService = new PostLikeServiceImpl(MyBatisUtil.getSqlSessionFactory());
     }
 
     public UserController setPostService(PostService postService){
@@ -44,6 +51,12 @@ public class UserController {
 
     public UserController setUserService(UserService userService) {
         this.userService = userService;
+        return this;
+    }
+
+    public UserController setPostLikeService(PostLikeService postLikeService)
+    {
+        this.postLikeService = postLikeService;
         return this;
     }
 
@@ -65,33 +78,36 @@ public class UserController {
 
     @RequestMapping(value = {"/profile"}, method = RequestMethod.POST)
     public ModelAndView processDeletePost(HttpServletRequest request, Principal principal, ModelMap model) {
-        User user = userService.getByUsername(principal.getName());
-        Map<String, User> map = new HashMap<String, User>();
-        map.put("user", user);
-
-        String deletePostId = request.getParameter("deletePost");
-
-        postService.deleteAllPostsByMainPost(Long.parseLong(deletePostId));
-
-        List<Post> myPosts = postService.findMainPostByAuthorNameSortedByCreateTime(principal.getName());
-        model.addAttribute("myPosts", myPosts);
-        return new ModelAndView("user/profile", map);
+        return deletePostMethod(request, principal, model);
     }
 
     @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
     public ModelAndView processCreate(HttpServletRequest request) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        Map<String, Object> map = new HashMap<String, Object>();
+        boolean isPwdValid = isLegalPwd(password);
+        if(!isPwdValid){
+            map.put("hasError", true);
+            Map<String,String> errors = new HashMap<String, String>();
+            errors.put("password","Password should only contains numbers, chars and underscore with length between 6 to 12");
+            map.put("errors",errors);
+            return new ModelAndView("user/createSuccess", map);
+        }
 
         UserBuilder builder = new UserBuilder();
         builder.userName(username).password(password).enable(true);
+        ServiceResult<User> result = userService.save(builder.build());
 
-        userService.save(builder.build());
-        User user = userService.getByUsername(username);
-
-        Map<String, User> map = new HashMap<String, User>();
-        map.put("user", user);
-
+        if(result!=null){
+           map.put("user", result.getModel());
+           if(result.getErrors().isEmpty()){
+               map.put("hasError", false);
+           }else{
+               map.put("hasError", true);
+               map.put("errors",result.getErrors());
+           }
+        }
         return new ModelAndView("user/createSuccess", map);
     }
 
@@ -110,22 +126,20 @@ public class UserController {
         String newPasswd = request.getParameter("confirmPassword");
         Map<String, User> map = new HashMap<String, User>();
         map.put("user", user);
-
         List<Post> myPosts = postService.findMainPostByAuthorNameSortedByCreateTime(principal.getName());
         model.addAttribute("myPosts", myPosts);
-
-        if (userService.passwordVerify(user, password) && userService.password(user, newPasswd)){
+        if (isLegalPwd(newPasswd)&&userService.passwordVerify(user, password) && userService.password(user, newPasswd)){
             model.addAttribute("success", "Password changed successfully.");
-            return new ModelAndView("user/profile", map);
+        }else{
+            model.addAttribute("error", "Failed to change password.");
         }
-        model.addAttribute("error", "Failed to change password.");
         return new ModelAndView("user/profile", map);
     }
 
     @RequestMapping(value = {"/users"}, method = RequestMethod.GET)
     public ModelAndView showAllUsers(ModelMap map) {
         Map <User,String> usersWithRoles= userService.getAllUsersWithRole();
-        map.put("usersWithRoles",usersWithRoles);
+        map.put("usersWithRoles", usersWithRoles);
         return new ModelAndView("user/users", map);
     }
 
@@ -133,8 +147,19 @@ public class UserController {
     public ModelAndView authoriseUser(HttpServletRequest request,ModelMap model) {
         userService.authoriseUser(Long.parseLong(request.getParameter("authoriseUserId")));
         Map <User,String> usersWithRoles= userService.getAllUsersWithRole();
-        model.put("usersWithRoles",usersWithRoles);
+        model.put("usersWithRoles", usersWithRoles);
         return new ModelAndView("user/users", model);
+    }
+
+    @RequestMapping(value = {"/disableUser"}, method = RequestMethod.POST)
+    public ModelAndView processUserDisable(HttpServletRequest request, ModelMap model) {
+        String userName = request.getParameter("userName");
+        User user = userService.getByUsername(userName);
+        userService.disable(user);
+        Map<String,User> map = new HashMap<String,User>();
+        Map <User,String> usersWithRoles= userService.getAllUsersWithRole();
+        model.put("usersWithRoles",usersWithRoles);
+        return new ModelAndView("redirect:users",map);
     }
 
     @RequestMapping(value = {"/updateProfile"}, method = RequestMethod.GET)
@@ -163,9 +188,14 @@ public class UserController {
                 post.setAuthorName(newUsername);
                 postService.save(post);
             }
-
             userService.update(user);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(newUsername,user.getPasswordHash());
+            Authentication oldAuthentication = SecurityContextHolder.getContext().getAuthentication();
+            Authentication authentication = null;
+            if(oldAuthentication == null){
+                authentication = new UsernamePasswordAuthenticationToken(newUsername,user.getPasswordHash());
+            }else{
+                authentication = new UsernamePasswordAuthenticationToken(newUsername,user.getPasswordHash(),oldAuthentication.getAuthorities());
+            }
             SecurityContextHolder.getContext().setAuthentication(authentication);
             map.clear();
             map.put("user",user);
@@ -188,6 +218,42 @@ public class UserController {
         map.put("myPosts", posts);
         map.put("showUser", showUser);
         return new ModelAndView("user/profile", map);
-
     }
+
+    @RequestMapping(value = {"/{id}"}, method = RequestMethod.POST)
+    public ModelAndView DeletePost(HttpServletRequest request, Principal principal, ModelMap model) {
+        return deletePostMethod(request, principal, model);
+    }
+
+    private ModelAndView deletePostMethod(HttpServletRequest request, Principal principal, ModelMap model) {
+        User user = userService.getByUsername(principal.getName());
+        Map<String, User> map = new HashMap<String, User>();
+        map.put("user", user);
+
+        String deletePostId = request.getParameter("deletePost");
+        postService.delete(postService.get(new Long(deletePostId)));
+        deleteRelatedPostLike(deletePostId);
+
+        List<Post> myPosts = postService.findMainPostByAuthorNameSortedByCreateTime(principal.getName());
+        model.addAttribute("myPosts", myPosts);
+        return new ModelAndView("user/profile", map);
+    }
+
+    private void deleteRelatedPostLike(String postID)
+    {
+        List<PostLike> likeListByPostID = postLikeService.getPostLikeByPostID(Long.parseLong(postID));
+        for(PostLike aLike : likeListByPostID)
+        {
+            postLikeService.deletePostLike(aLike);
+        }
+    }
+
+    private boolean isLegalPwd(String pwd){
+        if(pwd==null || pwd.trim().isEmpty()) return false;
+        String regex = "^[a-zA-Z0-9]\\w{5,11}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(pwd);
+        return matcher.matches();
+    }
+
 }

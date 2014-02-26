@@ -2,6 +2,7 @@ package com.thoughtworks.bbs.service;
 
 import com.thoughtworks.bbs.model.Post;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PostService {
@@ -20,5 +21,9 @@ public interface PostService {
 
     List<Post> findMainPostByAuthorNameSortedByCreateTime(String authorName);
 
-    void deleteAllPostsByMainPost(Long postId);
+    Long getPostIdByAuthorAndCreateTime (String name, Date time);
+
+    List<Post> searchPost(String author, String title, String content, String start, String end);
+
+    void setTopMostPost(String postID);
 }
