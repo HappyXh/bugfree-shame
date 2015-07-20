@@ -17,6 +17,6 @@
         </environment>
     </environments>
     <mappers>
-        <package name="com.thoughtworks.bbs.mappers"/>
+        <package name="com.huan.helloworld.mappers"/>
     </mappers>
 </configuration>

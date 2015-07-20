@@ -27,7 +27,7 @@
     </c:when>
 </c:choose>
 
-<div id="userInformation">
+<div id="userInformation" class="container">
     <table class="table">
         <tr>
             <th class="first">Name</th>
@@ -63,90 +63,8 @@
 
 </div>
 
-<div id="myPost">
-    <c:choose>
-    <c:when test="${empty showUser}">
-         <h2 size=24px>My Posts</h2>
-    </c:when>
-    <c:otherwise>
-       <c:if test="${showUser.id!=user.id}">
-          <h2>Posts</h2>
-       </c:if>
-       <c:if test="${showUser.id==user.id}">
-          <h2>My Posts</h2>
-       </c:if>
-    </c:otherwise>
-    </c:choose>
 
-    <table class="table table-striped">
-        <thead>
-        <tr class="first">
-            <th>Title</th>
-            <th>Author</th>
-            <th>Publish Time</th>
-            <c:choose>
-                <c:when test="${empty showUser}">
-                     <th>Operations</th>
-                </c:when>
-                <c:otherwise>
-                   <c:if test="${showUser.id==user.id}">
-                       <th>Operations</th>
-                   </c:if>
-                    <c:if test="${showUser.id!=user.id}">
-
-                    </c:if>
-                </c:otherwise>
-            </c:choose>
-
-        </tr>
-        </thead>
-        <tbody>
-
-        </script>
-
-        <c:forEach var="post" items="${myPosts}" varStatus="row">
-            <tr>
-                <td>
-                    <a href="<c:url value='/posts/${post.postId}' />">
-                        <c:out value="${post.title}"/>
-                    </a>
-                </td>
-                <td><c:out value="${post.authorName}"/></td>
-                <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-                <td><fmt:formatDate value="${post.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-
-                 <c:choose>
-                    <c:when test="${empty showUser}">
-                         <td><a href="javascript:void(0)" onclick="show_confirm('${post.postId}');">X</a></td>
-                    </c:when>
-                         <c:otherwise>
-                            <c:if test="${showUser.id==user.id}">
-                               <td><a href="javascript:void(0)" onclick="show_confirm('${post.postId}');">X</a></td>
-                            </c:if>
-                         </c:otherwise>
-                 </c:choose>
-
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-
-</div>
-
-<script type="text/javascript">
-function show_confirm(deletePostId)
-{
-var r=confirm("Are you sure to delete this post?");
-if (r==true)
-  {
-      document.deletePostForm.deletePost.value = deletePostId;
-      document.deletePostForm.submit();
-  }
-}
 </script>
-<form name="deletePostForm" method="post" onsubmit="return form_validate();">
-     <input type="hidden" id="deletePost" name="deletePost">
-</form>
 
 
 <%@ include file="../footer.jsp" %>

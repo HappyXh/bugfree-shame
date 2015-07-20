@@ -1,8 +1,13 @@
-<hr />
 
-<p class="pagination-centered">
-    ThoughtWorks BBS - powered by ZhengDaYeXiao !
-</p>
+
+<footer class="footer navbar-fixed-bottom ">
+    <div class="container">
+        <p>Designed and built with all the love in the PPT by <a href="#" target="_blank">@Leon</a>
+            and <a href="#" target="_blank">@Kevin</a> and <a href="#" target="_blank">@Happy</a>.
+        </p>
+        <p>Pointginker - powered by DianDianSiKe</p>
+    </div>
+</footer>
 
 </body>
 </html>

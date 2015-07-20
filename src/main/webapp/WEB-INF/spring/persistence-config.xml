@@ -27,6 +27,8 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
+
+
     <bean id="messageSource"
           class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
@@ -34,6 +36,22 @@
                 <value>security-errors</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="myDataSource" />
+        <property name="configLocation" value="classpath:mybatis.config.xml"/>
+    </bean>
+
+    <!-- REGISTERING MAPPERS TO ALLOW FOR INJECTION -->
+
+    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.huan.helloworld.mappers.UserMapper" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+    <bean id="userRoleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.huan.helloworld.mappers.UserRoleMapper" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>
 
     <context:property-placeholder ignore-unresolvable="true"
