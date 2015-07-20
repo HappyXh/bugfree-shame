@@ -292,10 +292,18 @@ td {
     color: #767676;
     text-align: center;
     border-top: 1px solid #e5e5e5;
+
+
 }
 
 .search-box{
     max-width:60%;
     margin-right: auto;
     margin-left: auto;
+}
+.story-container{
+    padding-top:40px;
+}
+.story-box{
+    cursor:hand;
 }
