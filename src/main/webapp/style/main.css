@@ -306,4 +306,11 @@ td {
 }
 .story-box{
     cursor:hand;
+
+}
+.selected{
+    background-image: url(../images/success.png) ;
+    background-position: 2% 0%;
+    background-repeat: no-repeat;
+
 }

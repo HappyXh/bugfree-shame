@@ -14,22 +14,22 @@
 <div class="row container story-container">
   <div class="col-xs-4 story-box" onclick="select(this)">
     <div class="thumbnail">
-      <img src="images/page.png" alt="..."   onclick="select(this)"/>
+      <img src="images/page.png" alt="..."   />
       <div class="caption">
         <h4>Topic label</h4>
       </div>
     </div>
   </div>
-  <div class="col-xs-4 story-box">
+  <div class="col-xs-4 story-box" onclick="select(this)">
       <div class="thumbnail">
-        <img src="images/page.png" alt="..." onclick="select(this)">
+        <img src="images/page.png" alt="..." ">
         <div class="caption">
           <h4>Topic label</h4>
         </div>
       </div>
   </div>
 
-  <div class="col-xs-4 story-box">
+  <div class="col-xs-4 story-box" onclick="select(this)">
     <div class="thumbnail">
      <img src="images/page.png" alt="..." >
      <div class="caption">
