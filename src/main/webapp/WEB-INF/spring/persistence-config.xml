@@ -53,6 +53,10 @@
         <property name="mapperInterface" value="com.huan.helloworld.mappers.UserRoleMapper" />
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>
+    <bean id="storyMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.huan.helloworld.mappers.StoryMapper" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
 
     <context:property-placeholder ignore-unresolvable="true"
                                   location="classpath:illegalwords.properties" />

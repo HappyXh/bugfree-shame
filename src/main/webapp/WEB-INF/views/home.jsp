@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="pageTitle" scope="request" value="Home"/>
 <script type="text/javascript" src="<c:url value='/scripts/home.js' />"></script>
 
@@ -12,30 +13,16 @@
 </div>
 
 <div class="row story-container">
-  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
-    <div class="thumbnail">
-      <img src="images/page.png" alt="..."   />
-      <div class="caption">
-        <h4>Topic label</h4>
-      </div>
-    </div>
-  </div>
-  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
-      <div class="thumbnail">
-        <img src="images/page.png" alt="..." ">
-        <div class="caption">
-          <h4>Topic label</h4>
+    <c:forEach var="story" items="${storyList}" varStatus="status">
+        <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
+            <div class="thumbnail">
+              <c:set var="string1" value="${story.filePath}"/>
+              <img src="${fn:substringBefore(string1,'.')}1.png" alt="..."   />
+              <div class="caption">
+                <h4>${story.title}</h4>
+              </div>
+            </div>
         </div>
-      </div>
-  </div>
-
-  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
-    <div class="thumbnail">
-     <img src="images/page.png" alt="..." >
-     <div class="caption">
-       <h4>Topic label</h4>
-     </div>
-  </div>
- </div>
+    </c:forEach>
 </div>
 <%@ include file="footer.jsp" %>
