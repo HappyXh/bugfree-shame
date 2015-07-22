@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `enabled`) VALUES
-(2, 'huan', '123456', 1);
+(1, 'huan', '123456', 1);
 
 -- --------------------------------------------------------
 
@@ -58,8 +58,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
 --
 
 INSERT INTO `user_roles` (`userid`, `rolename`) VALUES
-(1, 'ROLE_ADMIN'),
-(2, 'ROLE_ADMIN');
+(1, 'ROLE_ADMIN');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

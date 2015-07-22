@@ -23,6 +23,11 @@ public class HomeController {
         return "home";
     }
 
+    @RequestMapping(value="select",method = RequestMethod.GET)
+    public String getStoryLine(Model model, Principal principal) {
+
+        return "slide/selectSlide";
+    }
 
 
     private void displayHomePage(Principal principal, Model model) {

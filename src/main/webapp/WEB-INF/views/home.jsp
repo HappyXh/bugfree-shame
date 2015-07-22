@@ -11,8 +11,8 @@
   <a class='input-group-addon btn btn-primary'  href="#"><span class="glyphicon glyphicon-search"></span> Search</a>
 </div>
 
-<div class="row container story-container">
-  <div class="col-xs-4 story-box" onclick="select(this)">
+<div class="row story-container">
+  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
     <div class="thumbnail">
       <img src="images/page.png" alt="..."   />
       <div class="caption">
@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xs-4 story-box" onclick="select(this)">
+  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
       <div class="thumbnail">
         <img src="images/page.png" alt="..." ">
         <div class="caption">
@@ -29,7 +29,7 @@
       </div>
   </div>
 
-  <div class="col-xs-4 story-box" onclick="select(this)">
+  <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
     <div class="thumbnail">
      <img src="images/page.png" alt="..." >
      <div class="caption">

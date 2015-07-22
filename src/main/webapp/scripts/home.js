@@ -1,4 +1,4 @@
-function select(element){
+function focusOn(element){
     var e=document.getElementById("selected");
     if(e!=null){
         e.parentNode.removeChild(e);
@@ -11,4 +11,6 @@ function select(element){
     selectImg.style.top = "5px";
     element.appendChild(selectImg);      //为dom添加子元素img
 }
-
+function select(element){
+    location.href="/bugfree-shame/select";
+}
