@@ -36,7 +36,18 @@ public class HomeController {
     @RequestMapping(value="/{id}/select",method = RequestMethod.POST)
     public String getStoryLine(@PathVariable("id") int id, ModelMap map) throws IOException {
         Story story=storyService.findById(id);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
+            System.out.println(storyLine.getTitle());
 
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "slide/selectSlide";
     }
 

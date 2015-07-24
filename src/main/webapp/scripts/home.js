@@ -13,10 +13,15 @@ function focusOn(element){
 }
 function select(element){
 
-    var xml =new XMLHttpRequest();
-    xml.open('POST', "/bugfree-shame/{id}/select" , true);
-    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-    xml.send();
-
+//    var xml =new XMLHttpRequest();
+//    xml.open('POST', "/bugfree-shame/1/select" , true);
+//    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+//    xml.send();
+    var temp = document.createElement("form");
+        temp.action = "/bugfree-shame/1/select";
+        temp.method = "post";
+        temp.style.display = "none";
+        document.body.appendChild(temp);
+        temp.submit();
 
 }
