@@ -13,4 +13,7 @@ public interface StoryMapper {
             "SELECT * FROM story"
     )
     List<Story> findAll();
+
+    @Select("SELECT * FROM story where id=#{id}")
+    Story findById(int id);
 }

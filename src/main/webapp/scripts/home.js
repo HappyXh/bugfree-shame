@@ -12,5 +12,11 @@ function focusOn(element){
     element.appendChild(selectImg);      //为dom添加子元素img
 }
 function select(element){
-    location.href="/bugfree-shame/select";
+
+    var xml =new XMLHttpRequest();
+    xml.open('POST', "/bugfree-shame/{id}/select" , true);
+    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xml.send();
+
+
 }

@@ -17,8 +17,12 @@ public class StoryService {
     @Autowired
     StoryMapper storyMapper;
 
-    public List<Story> getAll(){
+    public List<Story> findAll(){
         List<Story> storyList=storyMapper.findAll();
         return storyList;
+    }
+
+    public Story findById(int id) {
+        return storyMapper.findById(id);
     }
 }
