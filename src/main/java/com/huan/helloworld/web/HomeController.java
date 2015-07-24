@@ -1,7 +1,10 @@
 package com.huan.helloworld.web;
 
+import com.huan.helloworld.model.Slide;
 import com.huan.helloworld.model.Story;
 import com.huan.helloworld.model.StoryLine;
+import com.huan.helloworld.model.SubPart;
+import com.huan.helloworld.service.SlideService;
 import com.huan.helloworld.service.StoryService;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 @Controller
 @RequestMapping("/")
@@ -23,6 +27,8 @@ public class HomeController {
 
     @Autowired
     StoryService storyService;
+    @Autowired
+    SlideService slideService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView get(ModelMap map, Principal principal) {
@@ -36,10 +42,19 @@ public class HomeController {
     @RequestMapping(value="/{id}/select",method = RequestMethod.POST)
     public String getStoryLine(@PathVariable("id") int id, ModelMap map) throws IOException {
         Story story=storyService.findById(id);
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
-            System.out.println(storyLine.getTitle());
+       try {
+           ObjectMapper objectMapper = new ObjectMapper();
+           StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
+           map.addAttribute("title",storyLine.getTitle());
+           map.addAttribute("parts",storyLine.getParts());
+           ArrayList slides = new ArrayList();
+           for(int i=0;i<storyLine.getParts().size();i++){
+               List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
+               for(int j=0;j<subparts.size();j++){
+                   slides.add(slideService.findById(subparts.get(j).getSlideId()));
+               }
+           }
+           map.addAttribute("slides",slides);
 
         } catch (JsonParseException e) {
             e.printStackTrace();

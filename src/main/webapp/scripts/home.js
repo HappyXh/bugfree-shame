@@ -11,14 +11,14 @@ function focusOn(element){
     selectImg.style.top = "5px";
     element.appendChild(selectImg);      //为dom添加子元素img
 }
-function select(element){
+function select(element,id){
 
 //    var xml =new XMLHttpRequest();
 //    xml.open('POST', "/bugfree-shame/1/select" , true);
 //    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 //    xml.send();
     var temp = document.createElement("form");
-        temp.action = "/bugfree-shame/1/select";
+        temp.action = "/bugfree-shame/"+id +"/select";
         temp.method = "post";
         temp.style.display = "none";
         document.body.appendChild(temp);

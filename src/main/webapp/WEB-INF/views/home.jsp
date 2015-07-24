@@ -14,7 +14,7 @@
 
 <div class="row story-container">
     <c:forEach var="story" items="${storyList}" varStatus="status">
-        <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this)">
+        <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this,${story.id})">
             <div class="thumbnail">
               <c:set var="string1" value="${story.filePath}"/>
               <img src="${fn:substringBefore(string1,'.')}1.png" alt="..."   />
