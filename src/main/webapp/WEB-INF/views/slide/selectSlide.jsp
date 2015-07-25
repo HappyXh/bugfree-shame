@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="pageTitle" scope="request" value="Home"/>
+<script type="text/javascript" src="<c:url value='../scripts/selectSlide.js' />"></script>
 
 <%@ include file="../header.jsp" %>
 <div class="container">
@@ -30,17 +31,20 @@
           </div><!-- /input-group -->
         </div><!-- /.col-lg-10 -->
         <div id="slides-box" >
+             <c:set var="slideIdStr" value=""/>
             <c:forEach var="slide" items="${slides}" varStatus="status">
                 <div class="col-xs-4" onclick="focusOn(this)" ondblclick="select(this)">
                     <div class="thumbnail">
+                        <c:set var="slideIdStr" value="${slideIdStr},${slide.id}"/>
                         <c:set var="string1" value="${slide.filePath}"/>
                         <img src="../${fn:substringBefore(string1,'.')}${slide.page}.png" alt="..."   />
                     </div>
                 </div>
             </c:forEach>
         </div>
+
         <div >
-            <a class="btn btn-default" href="#" role="button">Apply</a>
+            <input class="btn btn-default" type="button" value="Input" onclick="createPPT('${slideIdStr}')">
         </div>
    </div>
 </div>

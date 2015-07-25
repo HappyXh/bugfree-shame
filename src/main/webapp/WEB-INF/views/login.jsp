@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="pageTitle" scope="request" value="Login"/>
+<script type="text/javascript" src="<c:url value='/scripts/home.js' />"></script>
 
 <%@ include file="header.jsp" %>
 

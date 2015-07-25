@@ -47,7 +47,8 @@ public class HomeController {
            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
            map.addAttribute("title",storyLine.getTitle());
            map.addAttribute("parts",storyLine.getParts());
-           ArrayList slides = new ArrayList();
+           ArrayList<Slide> slides = new ArrayList();
+
            for(int i=0;i<storyLine.getParts().size();i++){
                List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
                for(int j=0;j<subparts.size();j++){
