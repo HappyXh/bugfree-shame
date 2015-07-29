@@ -17,7 +17,7 @@
         <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this,${story.id})">
             <div class="thumbnail">
               <c:set var="string1" value="${story.filePath}"/>
-              <img src="${fn:substringBefore(string1,'.')}1.png" alt="..."   />
+              <img src="${fn:substringBefore(string1,'.ppt')}1.PNG" alt="..."   />
               <div class="caption">
                 <h4>${story.title}</h4>
               </div>

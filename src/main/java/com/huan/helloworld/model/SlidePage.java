@@ -3,7 +3,7 @@ package com.huan.helloworld.model;
 /**
  * Created by happy on 7/25/2015.
  */
-public class Slide {
+public class SlidePage {
     private int id;
     private String filePath;
     private int page;
@@ -41,4 +41,11 @@ public class Slide {
     }
 
     private String feature;
+
+    @Override
+    public String toString() {
+        return String.format(
+                "{\"id\":\"%d\",\"filePath\":\"%s\",\"page\":\"%s\"}",
+                id, filePath, page);
+    }
 }

@@ -317,3 +317,6 @@ td {
     background-repeat: no-repeat;
 
 }
+.selectedStoryLine{
+    background-color: #ffff00;
+}

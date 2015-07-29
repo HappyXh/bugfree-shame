@@ -1,10 +1,10 @@
 package com.huan.helloworld.web;
 
-import com.huan.helloworld.model.Slide;
+import com.huan.helloworld.model.SlidePage;
 import com.huan.helloworld.model.Story;
 import com.huan.helloworld.model.StoryLine;
 import com.huan.helloworld.model.SubPart;
-import com.huan.helloworld.service.SlideService;
+import com.huan.helloworld.service.SlidePageService;
 import com.huan.helloworld.service.StoryService;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -28,7 +28,7 @@ public class HomeController {
     @Autowired
     StoryService storyService;
     @Autowired
-    SlideService slideService;
+    SlidePageService slidePageService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView get(ModelMap map, Principal principal) {
@@ -45,14 +45,15 @@ public class HomeController {
        try {
            ObjectMapper objectMapper = new ObjectMapper();
            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
-           map.addAttribute("title",storyLine.getTitle());
+           map.addAttribute("id",id);
+           map.addAttribute("title", storyLine.getTitle());
            map.addAttribute("parts",storyLine.getParts());
-           ArrayList<Slide> slides = new ArrayList();
+           ArrayList<SlidePage> slides = new ArrayList();
 
            for(int i=0;i<storyLine.getParts().size();i++){
                List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
                for(int j=0;j<subparts.size();j++){
-                   slides.add(slideService.findById(subparts.get(j).getSlideId()));
+                   slides.add(slidePageService.findById(subparts.get(j).getSlideId()));
                }
            }
            map.addAttribute("slides",slides);
@@ -64,7 +65,7 @@ public class HomeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "slide/selectSlide";
+        return "slide/showSlide";
     }
 
 
