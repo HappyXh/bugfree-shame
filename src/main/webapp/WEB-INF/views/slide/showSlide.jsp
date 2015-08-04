@@ -1,9 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="pageTitle" scope="request" value="Home"/>
-<link rel="stylesheet" type="text/css"  href="<c:url value='../style/imgSlider.css' />" />
+<link rel="stylesheet" type="text/css"  href="<c:url value='../../style/imgSlider.css' />" />
 
-<script type="text/javascript" src="<c:url value='../scripts/showSlide.js' />"></script>
+<script type="text/javascript" src="<c:url value='../../scripts/showSlide.js' />"></script>
 <%@ include file="../header.jsp" %>
 <div class="container">
     <div id="leftnav" class="col-xs-4">
@@ -21,7 +21,7 @@
                     <ul class="list-group">
                         <c:forEach var="subPart" items="${part.subParts}" varStatus="status">
 
-                            <li class="list-group-item" onclick=choose(this,"${id}","${index}") >${subPart.subNumber}: ${subPart.subTopic}</li>
+                            <li class="list-group-item" onclick=choose(this,"${id}","${index}","${slideIdStr}") >${subPart.subNumber}: ${subPart.subTopic}</li>
                             <c:set var="index" value="${index+1}" />
                         </c:forEach>
                     </ul>
@@ -53,5 +53,6 @@
         <div >
             <input class="btn btn-default" type="button" value="Apply" onclick="createPPT('${slideIdStr}')">
         </div>
+    </div>
 </div>
 <%@ include file="../footer.jsp" %>

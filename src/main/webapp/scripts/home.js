@@ -18,7 +18,7 @@ function select(element,id){
 //    xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 //    xml.send();
     var temp = document.createElement("form");
-        temp.action = "/bugfree-shame/"+id +"/select";
+        temp.action = "/bugfree-shame/slide/"+id +"/select";
         temp.method = "post";
         temp.style.display = "none";
         document.body.appendChild(temp);

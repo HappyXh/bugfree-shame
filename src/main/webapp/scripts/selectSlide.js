@@ -10,7 +10,7 @@ function createPPT(slides){
     document.body.appendChild(temp);
     temp.submit();
 }
-function choose(element,id,index){
+function choose(element,id,index,slideIdStr){
     var e = $(element);
     e.addClass("selectedStoryLine");
     e.siblings().removeClass('selectedStoryLine');
@@ -40,7 +40,8 @@ function choose(element,id,index){
             for(var i=0;i<objJson.length;i++){
                 var obj=objJson[i];
                 var str="<li data-sPic=\""+obj.filePath.substring(0,obj.filePath.indexOf('.ppt'))+obj.page+".PNG\">" +
-                    "<img src=\""+obj.filePath.substring(0,obj.filePath.indexOf('.ppt'))+""+obj.page+".PNG\"  style='width:100%; height:100%;' /></li>";
+                    "<img src=\""+obj.filePath.substring(0,obj.filePath.indexOf('.ppt'))+""+obj.page+".PNG\"  style='width:100%; height:100%;' " +
+                    "ondblclick=\"select("+id+",'"+slideIdStr+"',"+index+","+obj.id+")\" /></li>";
                 document.getElementById("imagebg").innerHTML+=str;
             }
             var dd=document.getElementById("imagebg").innerHTML;
@@ -52,17 +53,22 @@ function choose(element,id,index){
         complete: function() {console.log("get data complete");}
     });
 }
-function select(index,slideId){
+function select(id,slideIdStr,index,slideId){
+
+    var slideArr=slideIdStr.substring(1).split(',');
+    slideArr[index]=slideId.toString();
+    slideIdStr=slideArr.toString();
     var temp = document.createElement("form");
-    temp.action = "/bugfree-shame/slide/"+index+"select";
+    temp.action = "/bugfree-shame/slide/"+id +"/reSelect";
     temp.method = "post";
     temp.style.display = "none";
 
     var opt = document.createElement("textarea");
-    opt.name = "slideId";
-    opt.value =slideId;
+    opt.name = "slideIdStr";
+    opt.value =slideIdStr;
     temp.appendChild(opt);
 
     document.body.appendChild(temp);
     temp.submit();
+
 }

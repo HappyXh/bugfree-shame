@@ -39,34 +39,6 @@ public class HomeController {
         return new ModelAndView("home",map);
     }
 
-    @RequestMapping(value="/{id}/select",method = RequestMethod.POST)
-    public String getStoryLine(@PathVariable("id") int id, ModelMap map) throws IOException {
-        Story story=storyService.findById(id);
-       try {
-           ObjectMapper objectMapper = new ObjectMapper();
-           StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
-           map.addAttribute("id",id);
-           map.addAttribute("title", storyLine.getTitle());
-           map.addAttribute("parts",storyLine.getParts());
-           ArrayList<SlidePage> slides = new ArrayList();
-
-           for(int i=0;i<storyLine.getParts().size();i++){
-               List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
-               for(int j=0;j<subparts.size();j++){
-                   slides.add(slidePageService.findById(subparts.get(j).getSlideId()));
-               }
-           }
-           map.addAttribute("slides",slides);
-
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "slide/showSlide";
-    }
 
 
     private void displayHomePage(Principal principal, ModelMap map) {

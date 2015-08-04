@@ -11,16 +11,20 @@ function createPPT(slides){
     temp.submit();
 }
 
-function choose(element,id,index){
-    var e = $(element);
-    e.addClass("selectedStoryLine");
-    e.siblings().removeClass('selectedStoryLine');
+function choose(element,id,index,slideIdStr){
 
     var temp = document.createElement("form");
     temp.action = "/bugfree-shame/slide/"+id+"/"+index+"/choose";
     temp.method = "post";
     temp.style.display = "none";
+
+    var opt = document.createElement("textarea");
+    opt.name = "slideIdStr";
+    opt.value =slideIdStr;
+    temp.appendChild(opt);
+
     document.body.appendChild(temp);
     temp.submit();
 
 }
+

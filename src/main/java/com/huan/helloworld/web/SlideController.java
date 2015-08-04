@@ -3,6 +3,7 @@ package com.huan.helloworld.web;
 import com.huan.helloworld.model.SlidePage;
 import com.huan.helloworld.model.Story;
 import com.huan.helloworld.model.StoryLine;
+import com.huan.helloworld.model.SubPart;
 import com.huan.helloworld.service.SlidePageService;
 import com.huan.helloworld.service.StoryService;
 import org.apache.poi.hslf.HSLFSlideShow;
@@ -12,6 +13,8 @@ import org.apache.poi.hslf.model.TextBox;
 import org.apache.poi.hslf.usermodel.SlideShow;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by happy on 7/25/2015.
@@ -74,19 +78,6 @@ public class SlideController {
 
     @RequestMapping(value="{id}/{index}/select",method = RequestMethod.POST)
     public @ResponseBody String[] chooseAjax( @PathVariable("id") int id,@PathVariable("index") int index, HttpServletRequest request,ModelMap map)  {
-        Story story=storyService.findById(id);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        StoryLine storyLine = null;
-        try {
-            storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        map.addAttribute("title",storyLine.getTitle());
-        map.addAttribute("parts",storyLine.getParts());
-        map.addAttribute("id",id);
-        map.addAttribute("index",index);
 
         int MAX_NUM=slidePageService.fiinAll().size();
         Random r = new Random();
@@ -100,12 +91,9 @@ public class SlideController {
         }
         String[] str=new String[4];
         str[1]="[";
-        ArrayList<SlidePage> slides = new ArrayList();
         for(i=0;i<list.size()-1;i++){
-            slides.add(slidePageService.findById(list.get(i)));
             str[1]+=slidePageService.findById(list.get(i)).toString()+",";
         }
-        map.addAttribute("slides",slides);
         str[1]=str[1].substring(0,str[1].length()-1)+"]";
         str[0]="1";
 
@@ -114,7 +102,7 @@ public class SlideController {
 
     @RequestMapping(value="{id}/{index}/choose",method = RequestMethod.POST)
     public String choose( @PathVariable("id") int id,@PathVariable("index") int index, HttpServletRequest request,ModelMap map)  {
-
+        String slideIdStr = request.getParameter("slideIdStr");
         Story story=storyService.findById(id);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -128,6 +116,7 @@ public class SlideController {
         map.addAttribute("parts",storyLine.getParts());
         map.addAttribute("id",id);
         map.addAttribute("index",index);
+        map.addAttribute("slideIdStr",slideIdStr);
 
         int MAX_NUM=slidePageService.fiinAll().size();
         Random r = new Random();
@@ -139,8 +128,6 @@ public class SlideController {
                 list.add(i);
             }
         }
-        String[] str=new String[4];
-        str[1]="[";
         ArrayList<SlidePage> slides = new ArrayList();
         for(i=0;i<list.size()-1;i++){
             slides.add(slidePageService.findById(list.get(i)));
@@ -151,10 +138,61 @@ public class SlideController {
 
     }
 
-    @RequestMapping(value="/select",method = RequestMethod.POST)
-    public String select( HttpServletRequest request,ModelMap map)  {
+    @RequestMapping(value="/{id}/reSelect",method = RequestMethod.POST)
+    public String getStoryLine(@PathVariable("id") int id, ModelMap map,HttpServletRequest request) throws IOException {
+        String slideIdStr = request.getParameter("slideIdStr");
+        String[] slideArr=slideIdStr.split(",");
+        Story story = storyService.findById(id);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
+            map.addAttribute("id", id);
+            map.addAttribute("title", storyLine.getTitle());
+            map.addAttribute("parts", storyLine.getParts());
+            ArrayList<SlidePage> slides = new ArrayList();
 
-        return null;
+            for (int i = 0; i < slideArr.length; i++) {
+                slides.add(slidePageService.findById(Integer.parseInt(slideArr[i])));
+            }
+            map.addAttribute("slides", slides);
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "slide/showSlide";
+    }
+
+    @RequestMapping(value="/{id}/select",method = RequestMethod.POST)
+    public String getStoryLine(@PathVariable("id") int id, ModelMap map) throws IOException {
+        Story story=storyService.findById(id);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
+            map.addAttribute("id",id);
+            map.addAttribute("title", storyLine.getTitle());
+            map.addAttribute("parts",storyLine.getParts());
+            ArrayList<SlidePage> slides = new ArrayList();
+
+            for(int i=0;i<storyLine.getParts().size();i++){
+                List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
+                for(int j=0;j<subparts.size();j++){
+                    slides.add(slidePageService.findById(subparts.get(j).getSlideId()));
+                }
+            }
+            map.addAttribute("slides",slides);
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "slide/showSlide";
     }
 
     private void copySlide(Slide objSlide,Slide slide) {

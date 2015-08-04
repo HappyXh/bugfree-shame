@@ -9,21 +9,23 @@
     <div id="leftnav" class="col-xs-4">
         <p class="lead">${title}</p>
         <ul class="list-group">
-            <c:set var="slideIdStr" value=""/>
-            <c:forEach var="slide" items="${slides}" varStatus="status">
-                <c:set var="slideIdStr" value="${slideIdStr},${slide.id}"/>
-            </c:forEach>
-
-            <c:set var="index" value='0'/>
+            <c:set var="count" value='0'/>
             <c:forEach var="part" items="${parts}" varStatus="status">
                 <li class="list-group-item">${part.number}: ${part.topic}</li>
                 <li class="list-group-item">
                     <ul class="list-group">
-
                         <c:forEach var="subPart" items="${part.subParts}" varStatus="status">
-
-                            <li class="list-group-item" onclick=choose(this,"${id}","${index}") >${subPart.subNumber}: ${subPart.subTopic}</li>
-                            <c:set var="index" value="${index+1}" />
+                            <c:choose>
+                                <c:when test="${index==count}">
+                                    <li class="list-group-item selectedStoryLine"
+                                        onclick=choose(this,"${id}","${count}","${slideIdStr}") >${subPart.subNumber}: ${subPart.subTopic}</li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="list-group-item"
+                                        onclick=choose(this,"${id}","${count}","${slideIdStr}") >${subPart.subNumber}: ${subPart.subTopic}</li>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:set var="count" value="${count+1}" />
                         </c:forEach>
                     </ul>
                 </li>
@@ -31,13 +33,23 @@
         </ul>
     </div>
    <div class="col-xs-8">
+       <div class="col-lg-10">
+           <div class="input-group">
+               <span class="input-group-addon" >PPT Slides</span>
+               <input type="text" class="form-control" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button">Go!</button>
+            </span>
+           </div><!-- /input-group -->
+       </div><!-- /.col-lg-10 -->
        <div id="imageShow">
            <div id="imgshow_mask"></div>
            <ul class="imagebg" id="imagebg">
                <c:forEach var="slide" items="${slides}" varStatus="status">
                    <c:set var="string1" value="${slide.filePath}"/>
                    <li data-sPic="<c:url value='${fn:substringBefore(string1,".ppt")}${slide.page}.PNG' />">
-                       <img  class="bannerbg_main" src="<c:url value='${fn:substringBefore(string1,".ppt")}${slide.page}.PNG' />"  style='width:100%; height:100%;' />
+                       <img  class="bannerbg_main" src="<c:url value='${fn:substringBefore(string1,".ppt")}${slide.page}.PNG' />"
+                             style='width:100%; height:100%;' ondblclick="select(${id},'${slideIdStr}',${index},${slide.id})" />
                    </li>
                </c:forEach>
 
