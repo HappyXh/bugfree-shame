@@ -1,42 +1,52 @@
 package com.huan.helloworld.web;
 
 
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
-import org.apache.poi.hslf.model.TextPainter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
 
 /**
  * Created by happy on 7/25/2015.
  */
-public class test {
-    public static void main(String []args) {
 
-        String str1="\"name\"";
-        String str2=str1.replaceAll("\"","&nbsp;");
-        System.out.println(str2);
-//        try {
-//
-//            XMLSlideShow ppt = new XMLSlideShow();
-//            String[] inputs = {"D:/source.pptx"};
-//            for(String arg : inputs){
-//                FileInputStream is = new FileInputStream(arg);
-//                XMLSlideShow src = new XMLSlideShow(is);
-//                is.close();
-//
-//                for(XSLFSlide srcSlide : src.getSlides()){
-//                    ppt.createSlide().importContent(srcSlide);
-//
-//                }
-//            }
-//
-//            FileOutputStream out = new FileOutputStream("D:/merged.pptx");
-//            ppt.write(out);
-//            out.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+
+public class test {
+    private static ActiveXComponent ppt;
+    private static ActiveXComponent presentation;
+
+    public static void main(String[] args) {
+        ppt = new ActiveXComponent("PowerPoint.Application");
+        ppt.setProperty("Visible", new Variant(true));
+
+
+        new test().PPTToJPG("D:\\Project\\Pointhinker\\resource\\resume\\resume.ppt","D:\\Project\\Pointhinker\\resource\\resume");
+
     }
 
+    public void PPTToJPG(String pptfile, String saveToFolder) {
+        try {
+            ActiveXComponent presentations = ppt.getPropertyAsComponent("Presentations");
+            presentation = presentations.invokeGetComponent("Open", new Variant(pptfile), new Variant(true));
+            saveAs(presentation, saveToFolder);
+            if (presentation != null) {
+                Dispatch.call(presentation, "Close");
+            }
+        } catch (Exception e) {
+            ComThread.Release();
+        } finally {
+            ppt.invoke("Quit", new Variant[] {});
+            ComThread.Release();
+        }
+    }
+    public void saveAs(ActiveXComponent presentation, String saveTo)throws Exception {
+        ActiveXComponent  mySlides=presentation.getPropertyAsComponent("Slides");
+        int num_slide=mySlides.getPropertyAsInt("Count");
+        for(int i=1;i<=num_slide;i++) {
+            Dispatch pptPage = Dispatch.call(mySlides, "Item", new Object[]{new Variant(i)}).toDispatch();
+            Dispatch.call(pptPage,"Export","D:\\Project\\Pointhinker\\resource\\resume\\resume"+i+".PNG","PNG");
+        }
+
+    }
 }

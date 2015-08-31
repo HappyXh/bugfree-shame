@@ -14,10 +14,11 @@
 
 <div class="row story-container">
     <c:forEach var="story" items="${storyList}" varStatus="status">
-        <div class="col-xs-4 story-box" onclick="focusOn(this)" ondblclick="select(this,${story.id})">
-            <div class="thumbnail">
+        <div class="col-xs-4 clickable" onclick="focusOn(this)" ondblclick="select(this,${story.id})">
+            <div class="thumbnail" >
               <c:set var="string1" value="${story.filePath}"/>
-              <img src="${fn:substringBefore(string1,'.ppt')}1.PNG" alt="..."   />
+              <img class="story-img" src="${fn:substringBefore(string1,'.ppt')}1.PNG" alt="..."
+                   data-toggle="tooltip" data-placement="left" title="Double Click"/>
               <div class="caption">
                 <h4>${story.title}</h4>
               </div>
@@ -25,4 +26,7 @@
         </div>
     </c:forEach>
 </div>
+
+
+
 <%@ include file="footer.jsp" %>

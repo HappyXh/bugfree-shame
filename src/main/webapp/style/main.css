@@ -274,12 +274,23 @@ td {
 #logo{
     margin-top:50px;
 }
-
+#search-box{
+    margin-top:15px;
+}
 #slides-box{
-    margin-top:50px;
+    margin-top:15px;
+    overflow: hidden;
 }
 #imageShow{
-    margin-top:50px;
+    margin-top:16px;
+    display: none;
+}
+#apply-btn{
+    margin-right: 25px;
+    float: right;
+}
+#slideList div{
+    overflow: hidden;
 }
 .jiathis_style{
     float:right;
@@ -309,9 +320,10 @@ td {
     margin-right: auto;
     margin-left: auto;
 }
-.story-box{
-    cursor:hand;
 
+.story-img{
+    height:197px !important;
+    width:100%;
 }
 .selected{
     background-image: url(../images/success.png) ;
@@ -319,6 +331,40 @@ td {
     background-repeat: no-repeat;
 
 }
+.edited{
+    background-color: #dddddd;
+}
 .selectedStoryLine{
-    background-color: #ffff00;
+    background-color:#6C8EC7;
+}
+.clickable{
+    cursor:hand;
+}
+
+.slideContent{
+    border-radius: 4px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.slideEditor{
+    padding-left: 10px;
+    padding-right: 0px;
+}
+.partTitle{
+    font: 16px/180% Arial, Helvetica, sans-serif, "新宋体";
+    border-bottom: 1px solid #dddddd;
+    margin-top: 10px;
+    height: 30px;
+    overflow: hidden;
+}
+.partContent {
+
+}
+.slideTitleBox{
+    border-bottom: 1px solid #dddddd;
+    margin-top: 7px;
+    height: 25px;
+}
+.slideImg{
+    height:115px !important;
 }
