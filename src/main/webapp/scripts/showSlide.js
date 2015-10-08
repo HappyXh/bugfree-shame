@@ -1,16 +1,183 @@
+$(function(){
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'inline';
+    var outlines= $("a[id^=outline]");
+    //make username editable
+    for(var i = 0; i< outlines.length; i++){
+        $('#outline'+i).editable();
+    }
+});
 
 
-function createPPT(slides){
+function selectSlide(id,features){
+    $.ajax({
+        url: "slide/search",
+        data: {"features":features},
+        dataType:'json',
+        type: 'POST',
+        success: function(data){
+            var objJson= JSON.parse(data[0]);
+            document.getElementById("slides-box").style.display="none";
+            document.getElementById("apply-div").style.display="none";
+            document.getElementById("imageShow").style.display="block";
+            document.getElementById("search-btn").disabled=false;
+
+
+            document.getElementById("imagebg").innerHTML="";
+            for(var i=0;i<objJson.length;i++){
+                var obj=objJson[i];
+                var imgPath = "http://7xme1x.com1.z0.glb.clouddn.com/"+obj.filePath.substr(0,obj.filePath.lastIndexOf("."))+"-"+obj.page+".jpg";
+                var str="<li data-sPic=\""+imgPath+"\" >" +
+                    "<img data-slideIndex=\""+id+"\" data-slideId=\""+obj.id+"\" class=\"clickable\" src=\""+imgPath+"\"  " +
+                    "style='width:100%; height:100%;' onclick=selected(this) " +
+                    "/></li>";
+                document.getElementById("imagebg").innerHTML+=str;
+            }
+
+            $.getScript('scripts/imgSlider.js',img.init());
+        },
+        error: function(data) {
+            console.log("get data error" + data);
+        },
+        complete: function() {console.log("get data complete");}
+    });
+}
+
+function selected(e){
+    var index = e.getAttribute("data-slideindex")
+    var id = e.getAttribute("data-slideid")
+    var element = document.getElementById("slideImgBox"+index)
+    element.setAttribute("slideId", id)
+
+    var imgs = e.parentNode.parentNode.getElementsByTagName("img")
+    for(var i=0;i<imgs.length;i++){
+        imgs[i].setAttribute("style","width:100%; height:100%;")
+    }
+    e.setAttribute("style","width:100%; height:100%;filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5")
+
+
+    $.ajax({
+        url: "slide/getSlide/" + id,
+        data: null,
+        dataType: 'json',
+        type: 'POST',
+        success: function (data) {
+            var objJson= JSON.parse(data[0]);
+            var slideImg=document.getElementById("slideImg"+index)
+            slideImg.setAttribute("src","http://7xme1x.com1.z0.glb.clouddn.com/"+objJson[0].filePath.substr(0,objJson[0].filePath.lastIndexOf("."))+"-"+objJson[0].page+".jpg")
+            slideImg.setAttribute("onclick", "selectSlide("+index+",'"+objJson[0].features+"')")
+        },
+        error: function (data) {
+            console.log("get data error" + data);
+        },
+        complete: function () {
+            console.log("get data complete");
+        }
+    })
+
+}
+
+function scan(){
+    document.getElementById("slides-box").style.display="block";
+    document.getElementById("apply-div").style.display="block";
+    document.getElementById("imageShow").style.display="none";
+    document.getElementById("search-btn").disabled=true;
+    document.getElementById("imagebg").innerHTML="";
+
+}
+
+
+function createPPT(){
     var temp = document.createElement("form");
-    temp.action = "/bugfree-shame/slide/createPPT";
+    temp.action = "slide/createPPT";
     temp.method = "post";
     temp.style.display = "none";
     var opt = document.createElement("textarea");
-    opt.name = "slideIdStr";
-    opt.value =getSlideIdStr();
+    opt.name = "slideIdArr";
+    opt.value =getSlideIdArr();
     temp.appendChild(opt);
     document.body.appendChild(temp);
     temp.submit();
+}
+
+
+function getSlideIdArr(){
+    var slideIdArr=[];
+    var slideImgBoxes= $("div[id^=slideImgBox]");
+    for(var i=0;i<slideImgBoxes.length;i++){
+        slideIdArr.push(parseInt(slideImgBoxes[i].getAttribute("slideId")));
+    }
+    return slideIdArr
+}
+
+function del(id,e){
+    e.parentNode.parentNode.removeChild(e.parentNode)
+    var obj = document.getElementById("slideImgBox"+id)
+    obj.parentNode.removeChild(obj)
+
+}
+
+function add(id,e){
+    var slideIdArr= getSlideIdArr()
+    var index = Math.max.apply(null, slideIdArr) + 1
+
+    var obj = document.getElementById("slideImgBox"+id)
+    var strImgBox="<div id=\"slideImgBox"+index+"\" slideId=\""+index+"\" class=\"col-xs-4\"><div class=\"thumbnail\">"+
+        "<img  id=\"slideImg"+index+"\" class=\"slideImg\" src=\"http://7xme1x.com1.z0.glb.clouddn.com/default-0.jpg\" alt=\"...\""+
+        " onclick=\"selectSlide("+index+",'')\"/></div></div>"
+    var strOutline="<p><a class=\"navbar-right\" onclick=\"selectSlide("+index+",'')\">"+
+        "<span class=\"glyphicon glyphicon-list-alt\"></span></a>"+
+        "<a class=\"navbar-right\" onclick=\"add("+index+",this)\">" +
+        "<span class=\"glyphicon glyphicon-plus\"></span> </a>"+
+        "<a class=\"navbar-right\" onclick=\"del("+ index +",this)\">"+
+        "<span class=\"glyphicon glyphicon-minus\"></span></a>"+
+        "<a href=\"#\" id=\"outline"+ index +"\" data-type=\"text\" data-placement=\"right\">"+
+        "Enter your description</a></p>"
+    obj.insertAdjacentHTML("afterEnd",strImgBox);
+    e.parentNode.insertAdjacentHTML("afterEnd",strOutline);
+
+    $('#outline'+index).editable();
+}
+
+function search(){
+    var query_str = document.getElementById("search-txt").value
+    var index = document.getElementById("imagebg").getElementsByTagName("img")[0].getAttribute("data-slideindex")
+
+    if(query_str == ""){
+        document.getElementById("search-div").setAttribute("class","input-group has-error")
+        document.getElementById("search-txt").setAttribute("placeholder","Search box is blank")
+    }
+    else{
+        document.getElementById("search-div").setAttribute("class","input-group")
+        document.getElementById("search-txt").setAttribute("placeholder","Search for...")
+        $.ajax({
+            url: "slide/search",
+            data: {"features":query_str},
+            dataType: 'json',
+            type: 'POST',
+            success: function (data) {
+                var objJson= JSON.parse(data[0]);
+                document.getElementById("imagebg").innerHTML="";
+                for(var i=0;i<objJson.length;i++){
+                    var obj=objJson[i];
+                    var imgPath = "http://7xme1x.com1.z0.glb.clouddn.com/"+obj.filePath.substr(0,obj.filePath.lastIndexOf("."))+"-"+obj.page+".jpg";
+                    var str="<li data-sPic=\""+imgPath+"\" >" +
+                        "<img data-slideIndex=\""+index+"\" data-slideId=\""+obj.id+"\" class=\"clickable\" src=\""+imgPath+"\"  " +
+                        "style='width:100%; height:100%;' onclick=selected(this) " +
+                        "/></li>";
+                    document.getElementById("imagebg").innerHTML+=str;
+                }
+
+                $.getScript('scripts/imgSlider.js',img.init());
+            },
+            error: function (data) {
+                console.log("get data error" + data);
+            },
+            complete: function () {
+                console.log("get data complete");
+            }
+        })
+    }
 }
 
 function choose(element,id,selectedSlides){
@@ -26,7 +193,7 @@ function choose(element,id,selectedSlides){
     var form_data;
     form_data = new FormData();
     $.ajax({
-        url: "/bugfree-shame/slide/"+id+"/"+index+"/select",
+        url: "slide/"+id+"/"+index+"/select",
         dataType: 'json',
         cache: false,
         contentType: false,
@@ -39,6 +206,7 @@ function choose(element,id,selectedSlides){
             document.getElementById("slides-box").style.display="none";
             document.getElementById("apply-div").style.display="none";
             document.getElementById("imageShow").style.display="block";
+            document.getElementById("search-btn").disabled=false;
 
 
             document.getElementById("imagebg").innerHTML="";
@@ -78,7 +246,7 @@ function select(id,index,slideId,selectedSlides){
     form_data = new FormData();
     form_data.append("slideIdStr",slideIdStr);
     $.ajax({
-        url:"/bugfree-shame/slide/"+id+"/test?slideIdStr="+slideIdStr,
+        url:"slide/"+id+"/test?slideIdStr="+slideIdStr,
         dataType: 'json',
         cache: false,
         contentType: false,
@@ -91,6 +259,7 @@ function select(id,index,slideId,selectedSlides){
             document.getElementById("slides-box").style.display="block";
             document.getElementById("apply-div").style.display="block";
             document.getElementById("imageShow").style.display="none";
+            document.getElementById("search-btn").disabled=true;
 
             $(document.getElementById("slideTitle"+index)).removeClass("selectedStoryLine")
             $(document.getElementById("slideTitle"+index)).addClass("edited")
@@ -233,6 +402,7 @@ function back(){
     document.getElementById("slides-box").style.display="block";
     document.getElementById("apply-div").style.display="block";
     document.getElementById("imageShow").style.display="none";
+    document.getElementById("search-btn").disabled=false;
     var slideTitles=getSlideTitles();
     for(var i=0; i< slideTitles.length;i++){
         $(slideTitles[i]).removeClass('selectedStoryLine');

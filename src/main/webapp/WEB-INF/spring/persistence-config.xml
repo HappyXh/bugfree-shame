@@ -58,7 +58,11 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>
     <bean id="slideMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-        <property name="mapperInterface" value="com.huan.helloworld.mappers.SlidePageMapper" />
+        <property name="mapperInterface" value="com.huan.helloworld.mappers.SlideMapper" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+    <bean id="dictionaryMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.huan.helloworld.mappers.DictionaryMapper" />
         <property name="sqlSessionFactory" ref="sqlSessionFactory" />
     </bean>
 

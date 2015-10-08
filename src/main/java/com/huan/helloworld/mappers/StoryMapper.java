@@ -1,5 +1,6 @@
 package com.huan.helloworld.mappers;
 
+import com.huan.helloworld.model.Slides;
 import com.huan.helloworld.model.Story;
 import org.apache.ibatis.annotations.Select;
 
@@ -10,10 +11,10 @@ import java.util.List;
  */
 public interface StoryMapper {
     @Select(
-            "SELECT * FROM story"
+            "SELECT * FROM slides"
     )
     List<Story> findAll();
 
-    @Select("SELECT * FROM story where id=#{id}")
+    @Select("SELECT * FROM slides where id=#{id}")
     Story findById(int id);
 }

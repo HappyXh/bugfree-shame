@@ -1,6 +1,7 @@
 package com.huan.helloworld.service;
 
 import com.huan.helloworld.mappers.StoryMapper;
+import com.huan.helloworld.model.Slides;
 import com.huan.helloworld.model.Story;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

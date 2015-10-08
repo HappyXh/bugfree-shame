@@ -1,25 +1,12 @@
 package com.huan.helloworld.web;
 
-import com.huan.helloworld.model.SlidePage;
-import com.huan.helloworld.model.Story;
-import com.huan.helloworld.model.StoryLine;
-import com.huan.helloworld.model.SubPart;
-import com.huan.helloworld.service.SlidePageService;
-import com.huan.helloworld.service.StoryService;
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.ComThread;
-import com.jacob.com.Dispatch;
-import com.jacob.com.Variant;
-import org.apache.poi.hslf.HSLFSlideShow;
-import org.apache.poi.hslf.model.Shape;
-import org.apache.poi.hslf.model.Slide;
-import org.apache.poi.hslf.model.TextBox;
-import org.apache.poi.hslf.usermodel.SlideShow;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.huan.helloworld.model.Dictionary;
+import com.huan.helloworld.model.Slides;
+import com.huan.helloworld.service.DictionaryService;
+import com.huan.helloworld.service.SlideService;
+
+import com.huan.helloworld.util.LocalMysql;
+import com.huan.helloworld.util.ReadPDF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 /**
  * Created by happy on 7/25/2015.
@@ -44,187 +31,89 @@ import java.util.List;
 @RequestMapping("/slide")
 public class SlideController {
     @Autowired
-    SlidePageService slidePageService;
+    SlideService slideService;
     @Autowired
-    StoryService storyService;
+    DictionaryService dictionaryService;
 
-    private static final String OUTPUT_PATH="resource/output";
+
+    private static final String OUTPUT_PATH = "resource/output";
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String showSlides(ModelMap map) {
+        int[] slide_arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        List<Slides> slidesList = new ArrayList<>();
+        for (int i : slide_arr) {
+            slidesList.add(slideService.findById(i));
+        }
+        map.addAttribute("slidesList", slidesList);
+        return "slide/slide";
+    }
+
+
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public @ResponseBody String[] searchSlides( HttpServletRequest request) {
+        String features = request.getParameter("features");
+        return search(features);
+    }
+
+        @RequestMapping(value = "getSlide/{id}", method = RequestMethod.POST)
+    public @ResponseBody String[] getSlide(@PathVariable("id") int id, ModelMap map, HttpServletRequest request) {
+        String[] slides_str = new String[1];
+        slides_str[0] = "[";
+        slides_str[0] += slideService.findById(id).toString() + "]";
+        return slides_str;
+    }
+
     @RequestMapping(value="/createPPT",method = RequestMethod.POST)
     public String createPPT( HttpServletRequest request,ModelMap map)  {
-
-        String slideIdStr = request.getParameter("slideIdStr");
-        String[] slidesArr=slideIdStr.split(",");
-
-        ComThread.InitSTA();
-        ActiveXComponent pptApp = new ActiveXComponent("PowerPoint.Application");
-        Dispatch.put(pptApp, "Visible", new Variant(true));
-
-        Dispatch presentations = pptApp.getProperty("Presentations").toDispatch();
-        // 打开输出文件
-        Dispatch outputPresentation = Dispatch.call(presentations, "add").toDispatch();
-        Dispatch outputSlides = Dispatch.call(outputPresentation, "Slides").toDispatch();
-        int outputPageNum ;
-        for (int i=0;i<slidesArr.length;i++){
-            SlidePage sp=slidePageService.findById(Integer.parseInt(slidesArr[i]));
-            outputPageNum = Dispatch.get(outputSlides, "Count").getInt();
-            Dispatch.call(outputSlides, "InsertFromFile","D:/Project/Pointhinker/resource/"+sp.getFilePath().substring(38), outputPageNum, sp.getPage(), sp.getPage());
+        String slideIdStr = request.getParameter("slideIdArr");
+        String[] slideIdArr = slideIdStr.split(",");
+        String fileName = UUID.randomUUID() + ".pdf";
+        ReadPDF myReadPDF = new ReadPDF(request.getSession().getServletContext().getRealPath("/")+
+                "/attachment/"+fileName);
+        LocalMysql myConn=new LocalMysql();
+        List<Integer> slides = new ArrayList<>();
+        for (String str : slideIdArr) {
+            slides.add(Integer.parseInt(str));
         }
-        Dispatch.call(outputPresentation, "SaveAs","D:/test.ppt");
-        Dispatch.call(outputPresentation, "Close");
-        pptApp.invoke("Quit");
-        ComThread.Release();
-        return "slide/success";
-
-    }
-
-    @RequestMapping(value="{id}/{index}/select",method = RequestMethod.POST)
-    public @ResponseBody String[] chooseAjax( @PathVariable("id") int id,@PathVariable("index") int index, HttpServletRequest request,ModelMap map)  {
-        List<SlidePage> slidePages=slidePageService.fiinAll();
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        switch(index){
-            case 0:
-                list.add(2);
-                list.add(41);
-                list.add(53);
-                list.add(62);
-                list.add(71);
-                break;
-            case 1:
-                list.add(42);
-                break;
-            case 2:
-                list.add(43);
-                list.add(44);
-                break;
-            case 3:
-                list.add(45);
-                list.add(46);
-                list.add(47);
-                break;
-            case 4:
-                list.add(48);
-                list.add(49);
-                break;
-            case 5:
-                list.add(50);
-                break;
-            case 6:
-                list.add(51);
-                list.add(52);
-                break;
-            case 7:
-                list.add(76);
-                list.add(77);
-                break;
-            case 8:
-                list.add(78);
-                break;
-            case 9:
-                list.add(79);
-                break;
-            case 10:
-                list.add(13);
-                list.add(80);
-                break;
-            default:
-                //        int MAX_NUM=12;
-                slidePages.remove(0);
-                int MAX_NUM=slidePages.size();
-                Random r = new Random();
-                int i;
-                while(list.size() < 10){
-                    i = r.nextInt(MAX_NUM-1)+ 1;
-                    if(!list.contains(i)){
-                        list.add(slidePages.get(i).getId());
-                    }
-                }
-        }
-
-        String[] str=new String[2];
-        str[1]="[";
-        for(int i=0;i<list.size();i++){
-            str[1]+=slidePageService.findById(list.get(i)).toString()+",";
-        }
-        str[1]=str[1].substring(0,str[1].length()-1)+"]";
-        str[0]="1";
-
-        return str;
-    }
-
-    @RequestMapping(value="{id}/test",method = RequestMethod.POST)
-    public @ResponseBody String[] test( @PathVariable("id") int id, HttpServletRequest request){
-        String slideIdStr = request.getParameter("slideIdStr");
-        String[] slidesArr=slideIdStr.split(",");
-        String[] str=new String[1];
-
-        str[0]="[";
-        for(int i=0;i<slidesArr.length;i++){
-            str[0]+=slidePageService.findById(Integer.parseInt(slidesArr[i])).toString()+",";
-        }
-        str[0]=str[0].substring(0,str[0].length()-1)+"]";
-
-        return str;
-    }
-
-    @RequestMapping(value="/{id}/reSelect",method = RequestMethod.POST)
-    public String getStoryLine(@PathVariable("id") int id, ModelMap map,HttpServletRequest request) throws IOException {
-        String slideIdStr = request.getParameter("slideIdStr");
-        String selectedSlides = request.getParameter("selectedSlides");
-        String storyLineStr=request.getParameter("storyLineStr");
-
-        map.addAttribute("selectedSlides",selectedSlides);
-
-        String[] slideArr=slideIdStr.split(",");
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            StoryLine storyLine = objectMapper.readValue(storyLineStr, StoryLine.class);
-            map.addAttribute("id", id);
-            map.addAttribute("title", storyLine.getTitle());
-            map.addAttribute("parts", storyLine.getParts());
-            ArrayList<SlidePage> slides = new ArrayList();
-
-            for (int i = 0; i < slideArr.length; i++) {
-                slides.add(slidePageService.findById(Integer.parseInt(slideArr[i])));
-            }
-            map.addAttribute("slides", slides);
-
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            myReadPDF.createPDF(slides, myConn);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return "slide/showSlide";
+        myConn.close();
+        return "redirect:http://www.poinThinker.com/attachment/"+fileName;
     }
 
-    @RequestMapping(value="/{id}/select",method = RequestMethod.POST)
-    public String getStoryLine(@PathVariable("id") int id, ModelMap map) throws IOException {
-        Story story=storyService.findById(id);
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            StoryLine storyLine = objectMapper.readValue(story.getStoryLine(), StoryLine.class);
-            map.addAttribute("id",id);
-            map.addAttribute("title", storyLine.getTitle());
-            map.addAttribute("parts",storyLine.getParts());
-            ArrayList<SlidePage> slides = new ArrayList();
-
-            for(int i=0;i<storyLine.getParts().size();i++){
-                List<SubPart> subparts=storyLine.getParts().get(i).getSubParts();
-                for(int j=0;j<subparts.size();j++){
-                    slides.add(slidePageService.findById(subparts.get(j).getSlideId()));
-                }
-            }
-            map.addAttribute("slides",slides);
-
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String[] search(String features){
+        String[] features_arr = features.replaceAll("\\s+", "").split(",");
+        String ids = "";
+        for (String str : features_arr) {
+            ids += dictionaryService.getIdsByWord(str) + ",";
         }
-        return "slide/showSlide";
+        String[] ids_arr = ids.split(",");
+        List<String> str_list = new ArrayList<String>();
+        for (int i=0; i<ids_arr.length; i++) {
+            if(!str_list.contains(ids_arr[i])) {
+                str_list.add(ids_arr[i]);
+            }
+        }
+
+        int count = 0;
+        String[] slides_str = new String[1];
+        slides_str[0] = "[";
+        for (String str : str_list) {
+            try {
+                count += 1;
+                if (count > 20) break;
+                slides_str[0] += slideService.findById(Integer.parseInt(str)).toString() + ",";
+            } catch (Exception e) {
+
+            }
+        }
+        slides_str[0] = slides_str[0].substring(0, slides_str[0].length() - 1) + "]";
+
+        return slides_str;
     }
 
 }

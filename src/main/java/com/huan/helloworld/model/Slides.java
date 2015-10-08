@@ -3,17 +3,18 @@ package com.huan.helloworld.model;
 /**
  * Created by happy on 7/25/2015.
  */
-public class SlidePage {
+public class Slides {
     private int id;
     private String filePath;
     private int page;
+    private String features;
 
-    public String getFeature() {
-        return feature;
+    public String getFeatures() {
+        return features;
     }
 
-    public void setFeature(String feature) {
-        this.feature = feature;
+    public void setFeatures(String features) {
+        this.features = features;
     }
 
     public int getId() {
@@ -40,12 +41,11 @@ public class SlidePage {
         this.page = page;
     }
 
-    private String feature;
 
     @Override
     public String toString() {
         return String.format(
-                "{\"id\":\"%d\",\"filePath\":\"%s\",\"page\":\"%s\"}",
-                id, filePath, page);
+                "{\"id\":\"%d\",\"filePath\":\"%s\",\"page\":\"%s\",\"features\":\"%s\"}",
+                id, filePath, page, features);
     }
 }

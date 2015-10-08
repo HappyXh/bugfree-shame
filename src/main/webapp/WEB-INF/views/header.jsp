@@ -8,16 +8,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>${pageTitle}</title>
     <link rel="stylesheet" href="<c:url value='/style/bootstrap.css' />" type="text/css"/>
     <link rel="stylesheet" href="<c:url value='/style/bootstrap-theme.css' />" type="text/css"/>
     <link rel="stylesheet" href="<c:url value='/style/main.css' />" type="text/css"/>
     <link rel="stylesheet" href="<c:url value='/style/jquery-ui.css' />">
+    <link rel="stylesheet" href="<c:url value='/style/bootstrap-editable.css' />">
 
     <script type="text/javascript" src="<c:url value='/scripts/jquery-1.10.2.js' />"></script>
-    <script type="text/javascript" src="<c:url value='/scripts/bootstrap.js' />"></script>
     <script type="text/javascript" src="<c:url value='/scripts/jquery-ui.js' />"></script>
+    <script type="text/javascript" src="<c:url value='/scripts/bootstrap.js' />"></script>
+    <script type="text/javascript" src="<c:url value='/scripts/bootstrap-editable.js' />"></script>
+
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -25,7 +28,7 @@
          <div class="container-fluid">
              <!-- Brand and toggle get grouped for better mobile display -->
              <div class="navbar-header">
-               <a class="navbar-brand" href="#">Pointhinker</a>
+               <a class="navbar-brand" href="#">PoinThinker</a>
              </div>
              <!-- Collect the nav links, forms, and other content for toggling -->
              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -33,33 +36,34 @@
                     <li>
                         <a href="<c:url value='/' />" >Home</a>
                     </li>
-                    <security:authorize ifNotGranted="ROLE_ANONYMOUS">
-                        <li>
-                            <a href="<c:url value='/user/profile' />" class="nav_link"><i class="icon-user"></i> User Profile</a>
-                        </li>
-                        <security:authorize ifAnyGranted="ROLE_ADMIN">
-                            <li>
-                                <a href="<c:url value='/user/create' />" class="nav_link"><i class="icon-plus"></i> Create User</a>
-                            </li>
-                            <li>
-                                <a href="<c:url value='/user/users' />" class="nav_link"><i class="icon-plus"></i> Users</a>
-                            </li>
-                        </security:authorize>
+                    <%--<security:authorize ifNotGranted="ROLE_ANONYMOUS">--%>
+                        <%--<li>--%>
+                            <%--<a href="<c:url value='/user/profile' />" class="nav_link"><i class="icon-user"></i> User Profile</a>--%>
+                        <%--</li>--%>
+                        <%--<security:authorize ifAnyGranted="ROLE_ADMIN">--%>
+                            <%--<li>--%>
+                                <%--<a href="<c:url value='/user/create' />" class="nav_link"><i class="icon-plus"></i> Create User</a>--%>
+                            <%--</li>--%>
+                            <%--<li>--%>
+                                <%--<a href="<c:url value='/user/users' />" class="nav_link"><i class="icon-plus"></i> Users</a>--%>
+                            <%--</li>--%>
+                        <%--</security:authorize>--%>
                         <li>
                             <a href="#" class="nav_link"><i class="icon-eject"></i> Upload</a>
                         </li>
                         <li>
-                            <a href="#" class="nav_link"><i class="icon-eject"></i> About us</a>
+                            <a href="<c:url value='/about' />" class="nav_link"><i class="icon-eject"></i> About us</a>
                         </li>
                         <li>
-                            <a href="<c:url value="/j_spring_security_logout" />" class="nav_link"><i class="icon-eject"></i> Logout</a>
+                            <a href="<c:url value='/j_spring_security_logout' />" class="nav_link"><i class="icon-eject"></i> Logout</a>
                         </li>
-                    </security:authorize>
+                    <%--</security:authorize>--%>
                 </ul>
              </div><!-- /.navbar-collapse -->
          </div><!-- /.container-fluid -->
       </div>
     </nav>
+
 
     <!--[if lt IE 9]>
     <div class="alert alert-warning">

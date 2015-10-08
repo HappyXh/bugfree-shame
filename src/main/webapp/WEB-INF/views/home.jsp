@@ -8,19 +8,24 @@
     <img src="images/logo.png" class="img-responsive center-block" alt="Responsive image">
 </div>
 <div class="input-group search-box">
-  <input type="text" class="form-control" placeholder="Input your topic" aria-describedby="basic-addon2">
-  <a class='input-group-addon btn btn-primary'  href="#"><span class="glyphicon glyphicon-search"></span> Search</a>
+    <a type="button" class="btn btn-info btn-lg" href="<c:url value='slide' />">Create your PPT</a>
+
 </div>
 
-<div class="row story-container">
-    <c:forEach var="story" items="${storyList}" varStatus="status">
-        <div class="col-xs-4 clickable" onclick="focusOn(this)" ondblclick="select(this,${story.id})">
+<div class="row slide-container">
+    <c:forEach var="slide" items="${slideList}" varStatus="status">
+        <div class="col-xs-4">
             <div class="thumbnail" >
-              <c:set var="string1" value="${story.filePath}"/>
-              <img class="story-img" src="${fn:substringBefore(string1,'.ppt')}1.PNG" alt="..."
+              <c:set var="string1" value="${slide.filePath}"/>
+              <img class="slide-img" src="http://7xme1x.com1.z0.glb.clouddn.com/${fn:substringBefore(string1,'.pdf')}-${slide.page}.jpg" alt="..."
                    data-toggle="tooltip" data-placement="left" title="Double Click"/>
               <div class="caption">
-                <h4>${story.title}</h4>
+                1d ago, 5,070 views
+                <div class="actions">
+                    <a href="#"><span class="glyphicon glyphicon-heart"></span></a>
+                    <a href="#"><span class="glyphicon glyphicon-share-alt"></span></a>
+                    <a href="#"><span class="glyphicon glyphicon-save"></span></a>
+                </div>
               </div>
             </div>
         </div>

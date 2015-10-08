@@ -6,7 +6,6 @@ package com.huan.helloworld.model;
 public class Story {
     private int id;
     private String title;
-    private String storyLine;
     private String feature;
     private String filePath;
 
@@ -24,14 +23,6 @@ public class Story {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getStoryLine() {
-        return storyLine;
-    }
-
-    public void setStoryLine(String storyLine) {
-        this.storyLine = storyLine;
     }
 
     public String getFeature() {

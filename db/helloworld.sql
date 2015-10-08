@@ -16,7 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- DROP DATABASE IF EXISTS `helloworld`;
+DROP DATABASE IF EXISTS `helloworld`;
 
 CREATE DATABASE `helloworld` character set utf8;
 

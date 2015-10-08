@@ -16,9 +16,8 @@
     <mvc:resources mapping="/fonts/**" location="/fonts/" />
     <mvc:resources mapping="/ckeditor/**" location="/ckeditor/"/>
     <mvc:resources mapping="/images/**" location="/images/" />
-	<mvc:resources mapping="/resource/**" location="/resource/" />
-    <mvc:resources mapping="/favicon.ico" location="/images/favicon.ico" />
-	
+	<mvc:resources mapping="/attachment/**" location="/attachment/" />
+
 	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/views directory -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/" />
