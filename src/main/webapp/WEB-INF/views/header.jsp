@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="<c:url value='/style/bootstrap-theme.css' />" type="text/css"/>
     <link rel="stylesheet" href="<c:url value='/style/main.css' />" type="text/css"/>
     <link rel="stylesheet" href="<c:url value='/style/jquery-ui.css' />">
-    <link rel="stylesheet" href="<c:url value='/style/bootstrap-editable.css' />">
+    <%--<link rel="stylesheet" href="<c:url value='/style/bootstrap-editable.css' />">--%>
 
     <script type="text/javascript" src="<c:url value='/scripts/jquery-1.10.2.js' />"></script>
     <script type="text/javascript" src="<c:url value='/scripts/jquery-ui.js' />"></script>
     <script type="text/javascript" src="<c:url value='/scripts/bootstrap.js' />"></script>
-    <script type="text/javascript" src="<c:url value='/scripts/bootstrap-editable.js' />"></script>
+    <%--<script type="text/javascript" src="<c:url value='/scripts/bootstrap-editable.js' />"></script>--%>
 
 </head>
 <body>
@@ -34,9 +34,12 @@
              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="<c:url value='/' />" >Home</a>
+                        <a href="<c:url value='/home' />" >Home</a>
                     </li>
-                    <%--<security:authorize ifNotGranted="ROLE_ANONYMOUS">--%>
+                    <li>
+                        <a href="<c:url value='/about' />" class="nav_link"><i class="icon-eject"></i> About us</a>
+                    </li>
+                    <security:authorize ifNotGranted="ROLE_ANONYMOUS">
                         <%--<li>--%>
                             <%--<a href="<c:url value='/user/profile' />" class="nav_link"><i class="icon-user"></i> User Profile</a>--%>
                         <%--</li>--%>
@@ -48,16 +51,14 @@
                                 <%--<a href="<c:url value='/user/users' />" class="nav_link"><i class="icon-plus"></i> Users</a>--%>
                             <%--</li>--%>
                         <%--</security:authorize>--%>
-                        <li>
-                            <a href="#" class="nav_link"><i class="icon-eject"></i> Upload</a>
-                        </li>
-                        <li>
-                            <a href="<c:url value='/about' />" class="nav_link"><i class="icon-eject"></i> About us</a>
-                        </li>
+                        <%--<li>--%>
+                            <%--<a href="#" class="nav_link"><i class="icon-eject"></i> Upload</a>--%>
+                        <%--</li>--%>
+
                         <li>
                             <a href="<c:url value='/j_spring_security_logout' />" class="nav_link"><i class="icon-eject"></i> Logout</a>
                         </li>
-                    <%--</security:authorize>--%>
+                    </security:authorize>
                 </ul>
              </div><!-- /.navbar-collapse -->
          </div><!-- /.container-fluid -->

@@ -11,10 +11,10 @@ import java.util.List;
  */
 public interface StoryMapper {
     @Select(
-            "SELECT * FROM slides"
+            "SELECT * FROM story"
     )
     List<Story> findAll();
 
-    @Select("SELECT * FROM slides where id=#{id}")
-    Story findById(int id);
+    @Select("SELECT * FROM story where uniName=#{uniName}")
+    Story findByUniName(String uniName);
 }

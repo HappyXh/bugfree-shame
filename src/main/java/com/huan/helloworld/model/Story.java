@@ -4,40 +4,71 @@ package com.huan.helloworld.model;
  * Created by happy on 7/22/2015.
  */
 public class Story {
-    private int id;
-    private String title;
-    private String feature;
-    private String filePath;
+    private String uniName;
+    private String fileName;
+    private String slidesIds;
+    private String features;
+    private int scan;
 
-    public int getId() {
-        return id;
+    public String getUniName() {
+        return uniName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUniName(String uniName) {
+        this.uniName = uniName;
     }
 
-    public String getTitle() {
-        return title;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getFeature() {
-        return feature;
+    public String getSlidesIds() {
+        return slidesIds;
     }
 
-    public void setFeature(String feature) {
-        this.feature = feature;
+    public void setSlidesIds(String slidesIds) {
+        this.slidesIds = slidesIds;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getFeatures() {
+        return features;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFeatures(String features) {
+        this.features = features;
     }
+
+    public int getScan() {
+        return scan;
+    }
+
+    public void setScan(int scan) {
+        this.scan = scan;
+    }
+
+    public int getFavor() {
+        return favor;
+    }
+
+    public void setFavor(int favor) {
+        this.favor = favor;
+    }
+
+    public int getDownload() {
+        return download;
+    }
+
+    public void setDownload(int download) {
+        this.download = download;
+    }
+
+    private int favor;
+    private int download;
+
+
+
 }

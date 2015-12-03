@@ -9,9 +9,12 @@ import java.sql.*;
  */
 public class LocalMysql {
     static String driver = "com.mysql.jdbc.Driver";
+//    static String ConnectionString = "jdbc:mysql://localhost:3307/helloworld";
     static String ConnectionString = "jdbc:mysql://localhost:3306/helloworld";
-    static String username = "root";
+//    static String password = "";
     static String password = "poinThinker";
+    static String username = "root";
+
     private Connection conn;
 
     public LocalMysql() {
@@ -49,7 +52,8 @@ public class LocalMysql {
         this.conn.createStatement().executeUpdate(queryStr);
     }
     public int getSlideIDByFileAndPage(String fileName, int page) throws SQLException {
-        String queryStr="Select id from slides where filePath=\"" + fileName + "\" and page=" + page + ";";
+        String queryStr="Select id from slides where filePath=\"" + fileName +
+                "\" and page=" + page + ";";
         ResultSet rs=this.conn.prepareStatement(queryStr).executeQuery();
         if(rs.next())
             return rs.getInt(1);
@@ -72,5 +76,21 @@ public class LocalMysql {
             return rs.getString(1).split(",");
         else
             return null;
+    }
+    public String getFileById(int id) throws SQLException {
+        String queryStr = "SELECT filePath from slides where id=" + id + ";";
+        ResultSet rs=this.conn.prepareStatement(queryStr).executeQuery();
+        if(rs.next())
+            return rs.getString(1);
+        else
+            return null;
+    }
+    public int getPageById(int id) throws SQLException {
+        String queryStr = "SELECT page from slides where id=" + id + ";";
+        ResultSet rs=this.conn.prepareStatement(queryStr).executeQuery();
+        if(rs.next())
+            return Integer.parseInt(rs.getString(1));
+        else
+            return 1;
     }
 }

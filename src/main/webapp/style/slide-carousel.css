@@ -1,0 +1,132 @@
+#slides-content{
+
+}
+#slides-carousel{
+  height: 450px;
+
+}
+#slides-carousel .arrow{
+  position: absolute;
+  background: url("../images/news_all_b6796497.png") no-repeat 1000px 1000px;
+  width: 19px;
+  height: 36px;
+  left: 11px;
+  top: 180px;
+  cursor: pointer
+}
+#slides-carousel .pre-img{
+  position: absolute;
+  top: 49px;
+  left: 15px;
+  width: 40px;
+  height: 370px;
+  cursor: pointer;
+  border-radius: 20%;
+}
+#slides-carousel .next-img{
+  position: absolute;
+  top: 49px;
+  right: 15px;
+  width: 40px;
+  height: 370px;
+  cursor: pointer;
+  border-radius: 20%;
+}
+#slides-carousel .pre-img .is-hover{
+  background-position:-40px 0 !important;
+}
+#slides-carousel .next-img .is-hover{
+  background-position:-61px 0 !important;
+}
+#view{
+  position: absolute;
+  z-index: 1000;
+  right: 30px;
+}
+.img-viewer{
+  height: 370px;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative
+}
+.img-viewer-cell{
+  position: absolute;
+  top: 0;
+  left: 0
+}
+.img-viewer-cell a{
+  display: inline-block;
+  height: 370px;
+  outline: none;
+}
+.img-viewer-cell img{
+  height: 370px;
+  width: 715.5px;
+}
+.img-bars{
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 8px 0 0 15px;
+  background-color: #191919;
+  height: 80px
+}
+.img-bars span{
+  position: relative;
+  text-align: left;
+  width: 112px;
+  display: inline-block
+}
+.img-bars span span{
+  position: absolute;
+  opacity: .45;
+  transition: opacity 500ms;
+  top: 0;
+  left: 0;
+  width: 112px;
+  height: 65px;
+  cursor: pointer;
+  background: #000;
+}
+.img-bars span.cur-span span{
+  opacity: 0;
+  transition: opacity 500ms
+}
+.img-bars span.click-span img{
+  border: 1px solid #389cff
+}
+
+.img-bars img{
+  display: inline-block;
+  border: 1px solid #191919;
+  height: 65px;
+  width: 112px;
+  cursor: pointer
+}
+.img-bars-content{
+  position: absolute;
+  left: 0
+}
+.img-bars-wrapper{
+  width: 687px;
+  height: 65px;
+  overflow: hidden;
+  position: absolute
+}
+.hasarrow .arrow{
+  background-position:0 0 !important;
+}
+.hasarrow .next-img{
+  background-color: #bbbbbb;
+  opacity: .45;
+}
+
+.hasarrow .pre-img{
+  background-color: #bbbbbb;
+  opacity: .45;
+}
+
+.hasarrow .next-img .arrow{
+  background-position:-21px 0 !important;
+}
+

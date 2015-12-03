@@ -1,0 +1,74 @@
+#leftnav{
+
+}
+#leftnav .nav{
+    list-style: none;
+}
+#leftnav .nav li{
+    width: 100%;
+    cursor:pointer;
+}
+#leftnav .nav>li>a {
+font-size: 15px;
+color: #767676;
+padding: 4px 10px;
+text-decoration: none;
+
+}
+
+#leftnav .nav>.active>ul {
+    display: block;
+    padding-left : 0px;
+    width: 100%;
+}
+#leftnav .nav>.active>a[href^="#"] {
+font-weight: 700 !important;
+background-color: #eeeeee;
+border-left: 2px solid #563d7c !important;
+}
+#leftnav .nav .nav{
+    display: none;
+    padding-bottom: 10px;
+}
+#leftnav .nav .nav .active a[href^="#"]{
+    background-color: #D8EFD6;
+}
+#leftnav .nav .nav li:hover{
+font-weight: 400;
+color: #563d7c;
+background-color: #eeeeee;
+border-left: 1px solid #563d7c;
+}
+
+#leftnav .nav .nav>li>a {
+padding-top: 1px;
+padding-bottom: 1px;
+padding-left: 15px;
+font-size: 12px;
+font-weight: 400;
+}
+#leftnav .nav .nav a[href^="#"] span{
+border-bottom: dashed 1px #0088cc;
+}
+#leftnav .nav .nav .navbar-right{
+z-index: 1000;
+padding: 1px;
+//display: none;
+
+}
+#leftnav .nav .nav .active .navbar-right{
+//display: block;
+
+}
+#leftnav .nav .nav .navbar-right span{
+padding: 2px;
+width: 18px;
+font-size: 15px;
+border-radius: 4px;
+}
+#leftnav .nav-input{
+width: 85%;
+}
+#leftnav h3{
+    margin-top: 0px;
+}

@@ -8,6 +8,33 @@ public class Slides {
     private String filePath;
     private int page;
     private String features;
+    private int scan;
+    private int favor;
+    private int download;
+
+    public int getScan() {
+        return scan;
+    }
+
+    public void setScan(int scan) {
+        this.scan = scan;
+    }
+
+    public int getFavor() {
+        return favor;
+    }
+
+    public void setFavor(int favor) {
+        this.favor = favor;
+    }
+
+    public int getDownload() {
+        return download;
+    }
+
+    public void setDownload(int download) {
+        this.download = download;
+    }
 
     public String getFeatures() {
         return features;

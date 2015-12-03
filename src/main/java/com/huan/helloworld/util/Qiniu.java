@@ -11,7 +11,7 @@ import org.json.JSONException;
 import java.io.File;
 
 public class Qiniu {
-    public static final String QINIU_IMAGE_URL = "http://7xme1x.com1.z0.glb.clouddn.com/";
+    public static final String QINIU_IMAGE_URL = "http://7xnojy.com1.z0.glb.clouddn.com/";
     public static final String ACCESS_KEY = "0uIMPAgD2AdDnc6I4wvZv44mOzKif4RKUBvI5kvZ";
     public static final String SECRET_KEY = "yJ7d41vbv9OdGCdAOb7zTDu3Sthjkw5RzldWnTo9";
     public static final String BUCKET_NAME = "pointhinker";

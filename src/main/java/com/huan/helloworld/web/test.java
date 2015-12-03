@@ -1,23 +1,15 @@
 package com.huan.helloworld.web;
 
 
-import com.huan.helloworld.util.MyHash;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.ComThread;
-import com.jacob.com.Dispatch;
-import com.jacob.com.Variant;
-import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.pdfparser.PDFParser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.huan.helloworld.util.LocalMysql;
+import org.apache.poi.hslf.HSLFSlideShow;
+import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
+
+import java.io.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by happy on 7/25/2015.
@@ -26,39 +18,56 @@ import java.util.List;
 
 
 public class test {
-    private static ActiveXComponent ppt;
-    private static ActiveXComponent presentation;
 
-    public static void main(String[] args) throws IOException {
-        List<String> str_list = new ArrayList<String>();
-        str_list.add("");
-        for(String s : str_list){
-            System.out.println(1);
+    public static void main(String[] args) throws IOException, SQLException {
+//        LocalMysql localMysql = new LocalMysql();
+//        String queryStr = "SELECT * from story";
+//        ResultSet rs = localMysql.select(queryStr);
+//        while(rs.next()){
+//            String[] slidesIds = rs.getString("slidesIds").replaceAll("\\s+", "").split(",");
+//            String uniName = rs.getString("uniName");
+//            String story_feature = "";
+//            for(String str : slidesIds){
+//                int id = Integer.parseInt(str);
+//                if(id != 0){
+//                    String queryStr1 = "select * from slides where id =" + id;
+//                    ResultSet rs1 = localMysql.select(queryStr1);
+//                    if(rs1.next()) {
+//                        story_feature = story_feature + "," + rs1.getString("features");
+//                    }
+//                }
+//            }
+//            String queryStr2 = "UPDATE story set features=\"" + story_feature
+//                    + "\" where uniName=\"" + uniName + "\"";
+//            localMysql.update(queryStr2);
+//        }
+        sql2json();
+
+    }
+    public static void sql2json() throws SQLException, IOException {
+        LocalMysql localMysql = new LocalMysql();
+        String queryStr = "SELECT * from story";
+        ResultSet rs = localMysql.select(queryStr);
+        String filePath = "src/main/resources/sql2json";
+        File file = new File(filePath);
+        file.createNewFile();
+        FileWriter fileWriter = new FileWriter(filePath,true);
+        BufferedWriter bw = new BufferedWriter(fileWriter);
+        while(rs.next()){
+            bw.newLine();
+            bw.write("{ \"index\" : { \"_index\" : \"ppt\", \"_type\" : \"story\", " +
+                    "\"_id\" : \"" + rs.getString("uniName") + "\" } }");
+            bw.newLine();
+            bw.write("{ \"fileName\" : \""+rs.getString("fileName")+"\" ," +
+                    "\"slidesIds\" : \""+rs.getString("slidesIds")+"\" ," +
+                    "\"features\" : \""+rs.getString("features")+"\" ," +
+                    "\"scan\" : \""+rs.getString("scan")+"\" ," +
+                    "\"favor\" : \""+rs.getString("favor")+"\" ," +
+                    "\"download\" : \""+rs.getString("download")+"\"}" );
         }
+        fileWriter.flush();
+        bw.close();
+        fileWriter.close();
     }
 
-
-    public void PPTToJPG(String pptfile, String saveToFolder) {
-        try {
-            ActiveXComponent presentations = ppt.getPropertyAsComponent("Presentations");
-            presentation = presentations.invokeGetComponent("Open", new Variant(pptfile), new Variant(true));
-            saveAs(presentation, saveToFolder);
-            if (presentation != null) {
-                Dispatch.call(presentation, "Close");
-            }
-        } catch (Exception e) {
-            ComThread.Release();
-        } finally {
-            ppt.invoke("Quit", new Variant[] {});
-            ComThread.Release();
-        }
-    }
-    public void saveAs(ActiveXComponent presentation, String saveTo)throws Exception {
-        ActiveXComponent  mySlides=presentation.getPropertyAsComponent("Slides");
-        int num_slide=mySlides.getPropertyAsInt("Count");
-        for(int i=1;i<=num_slide;i++) {
-            Dispatch pptPage = Dispatch.call(mySlides, "Item", new Object[]{new Variant(i)}).toDispatch();
-            Dispatch.call(pptPage,"Export","D:\\Project\\Pointhinker\\resource\\resume\\resume"+i+".PNG","PNG");
-        }
-    }
 }

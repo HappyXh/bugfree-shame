@@ -67,12 +67,13 @@ public class MyHash {
             while(rs.next()){
                 map.put(rs.getString("word"),rs.getInt("indices"));
             }
-            myConn.close();
             return map;
         } catch (SQLException e) {
             e.printStackTrace();
-            myConn.close();
             return null;
+
+        }finally {
+            myConn.close();
         }
 
     }
@@ -80,7 +81,6 @@ public class MyHash {
 
 
     public static void main(String[] args) throws IOException {
-//        new ReadPDF().pdfToImags(fileStr,"/Users/happy/Downloads/001-060/001 WAL-MART STORES/");
     }
 
 

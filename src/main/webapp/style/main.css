@@ -272,10 +272,12 @@ td {
 }
 
 #logo{
-    margin-top:50px;
+    /*margin-top:0px;*/
 }
-#search-box{
-    margin-top:25px;
+#search-presentation{
+    width:60%;
+    margin-left: auto;
+    margin-right: auto;
 }
 #slides-box{
     margin-top:15px;
@@ -286,18 +288,38 @@ td {
     display: none;
 }
 #apply-btn{
-    margin-right: 25px;
-    float: right;
+    margin-top: 20px;
 }
 #slideList div{
     overflow: hidden;
 }
 #leftnav .panel{
     margin-bottom: 10px !important;
-}
 
+}
+#leftnav {
+
+}
 #leftnav pre{
     margin: 0 0 1px !important;
+}
+#slides-content{
+
+}
+#slides-outline{
+
+}
+.clearDiv {
+    clear: both;
+}
+
+#create_btn{
+    width: 100%;
+    height: 180px;
+    font-size: 50px;
+    position: relative;
+    top: -25px;
+    padding-top: 40px;
 }
 
 .jiathis_style{
@@ -405,4 +427,11 @@ td {
 }
 .text-danger{
     color: #FF4305 !important;
+}
+.about-us{
+    font-size: 20px;
+}
+.story-desc{
+    overflow: hidden;
+    height: 25px;
 }

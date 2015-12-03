@@ -25,8 +25,8 @@ import java.util.List;
  */
 public class ReadPDF {
 
-    private static String slidesPath = "http://7xme1x.com1.z0.glb.clouddn.com/";
-    private static String pptPath = "/Users/happy/Documents/ppt/";
+    private static String slidesPath = "http://7xoiwj.com1.z0.glb.clouddn.com/";
+//    private static String pptPath = "/Users/happy/Documents/ppt/";
     private static String fileStr = "/Users/happy/Documents/001-020/";
 //    private static String fileStr = "/Users/happy/Documents/test/";
     private String tmpFile;
@@ -103,11 +103,18 @@ public class ReadPDF {
         myConn.insert(queryStr);
 //        ResultSet rs = ps.executeQuery();
     }
+    public void uploadPptToSql(String uniName, String fileName, String slideIds, String features, LocalMysql myConn) throws SQLException {
+        String queryStr = "INSERT INTO story(uniName,fileName,slidesIds,features) VALUES(\""
+                + uniName + "\",\"" + fileName + "\",\"" + slideIds + "\",\"" + features + "\") ";
+        System.out.println(queryStr);
+        myConn.insert(queryStr);
+//        ResultSet rs = ps.executeQuery();
+    }
 
-    public void pdfToImages(String filePath, String savePath) throws IOException {
-        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1,
-                filePath.length());
+    public void pdfToImages(String fileName,String filePath) throws IOException {
+
         fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        String savePath = filePath.substring(0,filePath.lastIndexOf("/"));
         File file = null;
         InputStream in = null;
         java.util.List pages = null;
@@ -130,13 +137,14 @@ public class ReadPDF {
                     ImageWriter writer = (ImageWriter) iterator.next();
                     ImageOutputStream imageOut = ImageIO
                             .createImageOutputStream(new FileOutputStream(
-                                    new File(savePath + "/" + fileName + "-"
-                                            + i + ".jpg")));
+                                    new File(savePath + "/tmp.jpg")));
                     writer.setOutput(imageOut);
                     writer.write(new IIOImage(img_temp, null, null));
                     //upload image to Qiniu
-                    File tmpImage = new File(savePath + "/" + fileName + "-" + i + ".jpg");
+                    File tmpImage = new File(savePath + "/tmp.jpg");
                     Qiniu.uploadFile(tmpImage ,fileName + "-" + i + ".jpg");
+                    tmpImage.delete();
+
                 }
             }
         } catch (Exception e) {
@@ -179,16 +187,19 @@ public class ReadPDF {
                             continue;
                         }
                         key = UUID.randomUUID() + extractFileType(subFile1);
-                        fileName = pptPath + key;
+//                        fileName = pptPath + key;
                         try {
-                            myReadPDF.copyFile(file1 + "/" + subFile1, fileName);
-                            reader = myReadPDF.getReader(fileName);
+//                            myReadPDF.copyFile(file1 + "/" + subFile1, fileName);
+//                            reader = myReadPDF.getReader(fileName);
+                            reader = myReadPDF.getReader(file1 + "/" + subFile1);
                         }catch(InvalidPdfException e){
                             continue;
                         }catch (NoClassDefFoundError e){
                             continue;
                         }
                         int pageNum=reader.getNumberOfPages();
+                        //存储slides的Id
+                        List<Integer> slideIds =  new ArrayList<>();
                         for(int i = 1; i <= pageNum; i++){
                             content=myReadPDF.readPage(reader,i);
                             String[] words=content.split(" ");
@@ -204,9 +215,10 @@ public class ReadPDF {
 
                             //将本页Slide上传到数据库
                             myReadPDF.uploadSlideToSql(key,i-1,str_list.toString().substring(1,str_list.toString().length()-1),myConn);
-                            //更新词典索引
 
+                            //更新词典索引
                             slideId = myConn.getSlideIDByFileAndPage(key, i-1);
+                            slideIds.add(slideId);
                             for(String tmp: str_list){
                                 if(myHash.put(tmp)) {
 //                                    newWords.add(tmp);
@@ -215,21 +227,13 @@ public class ReadPDF {
                                 else updateIndex(tmp,slideId,myConn);
                             }
                         }
-                        myReadPDF.pdfToImages(fileName, slidesPath);
+                        myReadPDF.uploadPptToSql(key,subFile1.substring(0,subFile1.lastIndexOf(".")),
+                                slideIds.toString().substring(1, slideIds.toString().length() - 1),"",myConn);
+                        myReadPDF.pdfToImages(key,file1 + "/" + subFile1);
                     }
                 }
             }
         }
-//        int count=newWords.size();
-//        String queryStr;
-//        for(int i=0;i<count;i++){
-//            try {
-//                queryStr="INSERT INTO dictionary(word,indices) values(\""+newWords.get(i)+"\","+myHash.map.get(newWords.get(i))+")";
-//                myConn.insert(queryStr);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
         myConn.close();
     }
 
@@ -289,13 +293,19 @@ public class ReadPDF {
                 e.printStackTrace();
             }
         }
-        document.close();
+        try {
+            document.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
 
-    public static void main(String []args) throws SQLException {
+    public static void main(String []args) throws SQLException, IOException {
 
+//        ReadPDF reader= new ReadPDF();
+//        reader.pdfToImages("/Users/happy/Documents/test/001 WAL-MART STORES/2014-claire-babineaux-fontenots-opening-remarks.pdf");
 
         ReadPDF reader= new ReadPDF();
         try {

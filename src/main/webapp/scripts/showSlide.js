@@ -1,14 +1,3 @@
-$(function(){
-    //toggle `popup` / `inline` mode
-    $.fn.editable.defaults.mode = 'inline';
-    var outlines= $("a[id^=outline]");
-    //make username editable
-    for(var i = 0; i< outlines.length; i++){
-        $('#outline'+i).editable();
-    }
-});
-
-
 function selectSlide(id,features){
     $.ajax({
         url: "slide/search",
@@ -87,29 +76,6 @@ function scan(){
 }
 
 
-function createPPT(){
-    var temp = document.createElement("form");
-    temp.action = "slide/createPPT";
-    temp.method = "post";
-    temp.style.display = "none";
-    var opt = document.createElement("textarea");
-    opt.name = "slideIdArr";
-    opt.value =getSlideIdArr();
-    temp.appendChild(opt);
-    document.body.appendChild(temp);
-    temp.submit();
-}
-
-
-function getSlideIdArr(){
-    var slideIdArr=[];
-    var slideImgBoxes= $("div[id^=slideImgBox]");
-    for(var i=0;i<slideImgBoxes.length;i++){
-        slideIdArr.push(parseInt(slideImgBoxes[i].getAttribute("slideId")));
-    }
-    return slideIdArr
-}
-
 function del(id,e){
     e.parentNode.parentNode.removeChild(e.parentNode)
     var obj = document.getElementById("slideImgBox"+id)
@@ -139,46 +105,7 @@ function add(id,e){
     $('#outline'+index).editable();
 }
 
-function search(){
-    var query_str = document.getElementById("search-txt").value
-    var index = document.getElementById("imagebg").getElementsByTagName("img")[0].getAttribute("data-slideindex")
 
-    if(query_str == ""){
-        document.getElementById("search-div").setAttribute("class","input-group has-error")
-        document.getElementById("search-txt").setAttribute("placeholder","Search box is blank")
-    }
-    else{
-        document.getElementById("search-div").setAttribute("class","input-group")
-        document.getElementById("search-txt").setAttribute("placeholder","Search for...")
-        $.ajax({
-            url: "slide/search",
-            data: {"features":query_str},
-            dataType: 'json',
-            type: 'POST',
-            success: function (data) {
-                var objJson= JSON.parse(data[0]);
-                document.getElementById("imagebg").innerHTML="";
-                for(var i=0;i<objJson.length;i++){
-                    var obj=objJson[i];
-                    var imgPath = "http://7xme1x.com1.z0.glb.clouddn.com/"+obj.filePath.substr(0,obj.filePath.lastIndexOf("."))+"-"+obj.page+".jpg";
-                    var str="<li data-sPic=\""+imgPath+"\" >" +
-                        "<img data-slideIndex=\""+index+"\" data-slideId=\""+obj.id+"\" class=\"clickable\" src=\""+imgPath+"\"  " +
-                        "style='width:100%; height:100%;' onclick=selected(this) " +
-                        "/></li>";
-                    document.getElementById("imagebg").innerHTML+=str;
-                }
-
-                $.getScript('scripts/imgSlider.js',img.init());
-            },
-            error: function (data) {
-                console.log("get data error" + data);
-            },
-            complete: function () {
-                console.log("get data complete");
-            }
-        })
-    }
-}
 
 function choose(element,id,selectedSlides){
     var index=element.getAttribute("id").toString().substr(10);

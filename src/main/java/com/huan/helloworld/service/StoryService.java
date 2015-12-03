@@ -23,7 +23,7 @@ public class StoryService {
         return storyList;
     }
 
-    public Story findById(int id) {
-        return storyMapper.findById(id);
+    public Story findByUniName(String uniName) {
+        return storyMapper.findByUniName(uniName);
     }
 }

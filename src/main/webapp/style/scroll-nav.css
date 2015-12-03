@@ -1,0 +1,16 @@
+#slides-outline {
+max-height: 500px;
+overflow-y: scroll;
+overflow-x: hidden;
+}
+#slides-outline img{
+    width:91%;
+    height: 115px !important;
+}
+#slides-outline .thumbnail{
+margin-bottom: 0px;
+border: 2px solid #dddddd;
+}
+#slides-outline .active{
+background-color: #D8EFD6;
+}
