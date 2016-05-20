@@ -45,6 +45,11 @@ public class HomeController {
 
         return new ModelAndView("about",map);
     }
+    @RequestMapping(value="/help", method = RequestMethod.GET)
+    public ModelAndView getHelp(ModelMap map) {
+
+        return new ModelAndView("help",map);
+    }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public @ResponseBody String[] getSotry( HttpServletRequest request) {

@@ -1,7 +1,10 @@
 #slides-outline {
-max-height: 500px;
+max-height: 480px;
 overflow-y: scroll;
 overflow-x: hidden;
+border-bottom: 1px solid #dddddd;
+border-top: 1px solid #dddddd;
+
 }
 #slides-outline img{
     width:91%;

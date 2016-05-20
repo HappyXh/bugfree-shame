@@ -289,6 +289,7 @@ td {
 }
 #apply-btn{
     margin-top: 20px;
+    float: right;
 }
 #slideList div{
     overflow: hidden;
@@ -356,12 +357,7 @@ td {
     height:197px !important;
     width:100%;
 }
-.selected{
-    background-image: url(../images/success.png) ;
-    background-position: 2% 0%;
-    background-repeat: no-repeat;
 
-}
 .edited{
     background-color: #dddddd;
 }
@@ -430,6 +426,13 @@ td {
 }
 .about-us{
     font-size: 20px;
+}
+.help{
+    font-size: 20px;
+}
+.help img{
+    float: right;
+    width:500px;
 }
 .story-desc{
     overflow: hidden;

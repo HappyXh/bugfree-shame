@@ -39,6 +39,9 @@
                     <li>
                         <a href="<c:url value='/about' />" class="nav_link"><i class="icon-eject"></i> About us</a>
                     </li>
+                    <li>
+                        <a href="<c:url value='/help' />" class="nav_link"><i class="icon-eject"></i> Help</a>
+                    </li>
                     <security:authorize ifNotGranted="ROLE_ANONYMOUS">
                         <%--<li>--%>
                             <%--<a href="<c:url value='/user/profile' />" class="nav_link"><i class="icon-user"></i> User Profile</a>--%>
@@ -55,9 +58,9 @@
                             <%--<a href="#" class="nav_link"><i class="icon-eject"></i> Upload</a>--%>
                         <%--</li>--%>
 
-                        <li>
-                            <a href="<c:url value='/j_spring_security_logout' />" class="nav_link"><i class="icon-eject"></i> Logout</a>
-                        </li>
+                        <%--<li>--%>
+                            <%--<a href="<c:url value='/j_spring_security_logout' />" class="nav_link"><i class="icon-eject"></i> Logout</a>--%>
+                        <%--</li>--%>
                     </security:authorize>
                 </ul>
              </div><!-- /.navbar-collapse -->

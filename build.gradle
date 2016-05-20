@@ -69,6 +69,6 @@ task makeDev(type: Exec) {
     commandLine "./prepare_database.sh"
 }
 
-httpPort = 80
+httpPort = 8080
 stopPort = 9451
 stopKey = 'foobar'

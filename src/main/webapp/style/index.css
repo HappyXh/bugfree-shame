@@ -1,0 +1,116 @@
+body{
+    text-align: center;
+    overflow: hidden;
+}
+.layout {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFFFFF;
+}
+.main {
+    position: relative;
+    z-index: 1;
+    width: 1000px;
+    margin: 90px auto 0;
+    background: none;
+    height: 100%;
+}
+.content {
+    position: relative;
+    height: 100%;
+}
+.content_section {
+    position: absolute;
+    height: 100%;
+    top: 100%;
+    overflow:hidden;
+    left: 0;
+    right: 0;
+}
+.content_section .section{
+    position: absolute;
+    left: 0;
+    width: 1000px;
+}
+.content_section .section .right{
+    position: absolute;
+    left: 50%;
+    width: 500px;
+}
+.content_section .section .right img{
+    max-width: 500px;
+}
+.content_section .section .left{
+    position: absolute;
+    left: 0;
+    width: 500px;
+}
+.content_section .section .left img{
+    max-width: 500px;
+}
+.section_mg img{
+    max-height: 450px;
+}
+.section_btn {
+    border: 0;
+    background: #35b88f;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    outline: 0;
+    padding: 20px 10px 20px 10px;
+    text-align: center;
+    border-radius: 30px;
+    font-size: 40px;
+    width: 200px;
+    margin-top: 30px;
+    margin-left: auto ;
+    margin-right: auto;
+}
+.section_text{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 42px;
+}
+.side_nav {
+    position: absolute;
+    top: 50%;
+    width: 30px;
+    margin-top: -72px;
+    right: 30px;
+    color: #fff;
+    z-index: 2;
+}
+.side_nav li {
+    width: 30px;
+    padding: 5px 0;
+}
+ul {
+    list-style: none;
+}
+a.arrow {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    z-index: 2;
+    bottom: 50px;
+    left: 50%;
+    margin-left: -30px;
+    background: url("../images/ui_img.png") no-repeat -1px -1px;
+    text-indent: -999px;
+}
+a.side_nav_a:link, a.side_nav_a:visited {
+    display: block;
+    height: 25px;
+    line-height: 25px;
+    color: #fff;
+    font-size: 14px;
+    background: url("../images/ui_img.png") no-repeat -100px -18px;
+    padding: 0 10px;
+}
+a.side_nav_a:active, a.side_nav_a_active:link, a.side_nav_a_active:visited, a.side_nav_a:hover, a.side_nav_a_active:active {
+    background-position: -70px -15px;
+}

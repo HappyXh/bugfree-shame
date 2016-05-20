@@ -225,34 +225,37 @@ $(function() {
         type: 'POST',
         success: function (data) {
           var objJson= JSON.parse(data[0]);
-          var grid_img_str = $($("#slides-grid div[class=col-xs-4]")[0]).html()
-          grid_img_str = "<div class=\"col-xs-4\">" + grid_img_str + "</div>"
-          var carousel_img_str = $($("#img-viewer-cell a")[0]).html()
-          carousel_img_str = "<a>" + carousel_img_str + "</a>"
-          var bar_img_str = $($("#img-bars-content").children()[0]).html()
-          bar_img_str = "<span num=\"0\">" + bar_img_str + "</span>"
-          //document.getElementById("imagebg").innerHTML="";
+          if(objJson.length > 1){
+            var grid_img_str = $($("#slides-grid div[class=col-xs-4]")[0]).html()
+            grid_img_str = "<div class=\"col-xs-4\">" + grid_img_str + "</div>"
+            var carousel_img_str = $($("#img-viewer-cell a")[0]).html()
+            carousel_img_str = "<a>" + carousel_img_str + "</a>"
+            var bar_img_str = $($("#img-bars-content").children()[0]).html()
+            bar_img_str = "<span num=\"0\">" + bar_img_str + "</span>"
+            //document.getElementById("imagebg").innerHTML="";
 
-          $("#slides-grid").children().remove()
-          $("#img-viewer-cell").children().remove()
-          $("#img-bars-content").children().remove()
-          $("#img-viewer").attr("num",0)
-          for(var i=0;i<objJson.length;i++){
-            var obj=objJson[i];
-            var file_path = obj._source.filePath.substring(0,obj._source.filePath.indexOf('.'))+"-"+obj._source.page+".jpg"
-            $("#slides-grid").append(grid_img_str)
-            $("#slides-grid .thumbnail img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
-            $("#slides-grid .thumbnail img:last").attr("slides_id",obj._id)
-            $("#img-viewer-cell").append(carousel_img_str)
-            $("#img-viewer-cell img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
-            $("#img-viewer-cell img:last").attr("slides_id",obj._id)
-            $("#img-bars-content").append(bar_img_str)
-            $("#img-bars-content").children("span").last().attr("num",i)
-            $("#img-bars-content img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
+            $("#slides-grid").children().remove()
+            $("#img-viewer-cell").children().remove()
+            $("#img-bars-content").children().remove()
+            $("#img-viewer").attr("num",0)
+            for(var i=0;i<objJson.length;i++){
+              var obj=objJson[i];
+              var file_path = obj._source.filePath.substring(0,obj._source.filePath.indexOf('.'))+"-"+obj._source.page+".jpg"
+              $("#slides-grid").append(grid_img_str)
+              $("#slides-grid .thumbnail img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
+              $("#slides-grid .thumbnail img:last").attr("slides_id",obj._id)
+              $("#img-viewer-cell").append(carousel_img_str)
+              $("#img-viewer-cell img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
+              $("#img-viewer-cell img:last").attr("slides_id",obj._id)
+              $("#img-bars-content").append(bar_img_str)
+              $("#img-bars-content").children("span").last().attr("num",i)
+              $("#img-bars-content img:last").attr("src","http://7xoiwj.com1.z0.glb.clouddn.com/" + file_path)
+            }
+            c();
+            l(0, true);
+          }else{
+            alert("No result!")
           }
-          c();
-          l(0, true);
-
         },
         error: function (data) {
           console.log("get data error" + data);

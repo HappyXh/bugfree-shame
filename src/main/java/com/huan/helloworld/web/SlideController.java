@@ -5,10 +5,7 @@ import com.huan.helloworld.model.Slides;
 import com.huan.helloworld.service.DictionaryService;
 import com.huan.helloworld.service.SlideService;
 
-import com.huan.helloworld.util.ElasticSearch;
-import com.huan.helloworld.util.LocalMysql;
-import com.huan.helloworld.util.ReadPDF;
-import com.huan.helloworld.util.ReadPPT;
+import com.huan.helloworld.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,11 +40,8 @@ public class SlideController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String showSlides(ModelMap map) {
-        int[] slide_arr = {2, 3, 4, 5, 6, 7, 8, 9};
-        List<Slides> slidesList = new ArrayList<>();
-        for (int i : slide_arr) {
-            slidesList.add(slideService.findById(i));
-        }
+
+        List<Slides> slidesList = slideService.findAll().subList(2,11);
         map.addAttribute("slidesList", slidesList);
         return "slide/slide";
     }
@@ -59,6 +53,7 @@ public class SlideController {
         return search(features);
     }
 
+    //create ppt
     @RequestMapping(value="/createPPT",method = RequestMethod.POST)
     public String createPPT( HttpServletRequest request,ModelMap map)  {
         String slideIdStr = request.getParameter("slideIdArr");
@@ -81,11 +76,11 @@ public class SlideController {
             e.printStackTrace();
         }
         myConn.close();
-//        return "redirect:http://localhost:8080/bugfree-shame/tmpFile/"+fileName;
-        return "redirect:http://www.poinThinker.com/tmpFile/"+fileName;
+        return "redirect:http://localhost:8080/bugfree-shame/tmpFile/"+fileName;
+//        return "redirect:http://www.poinThinker.com/tmpFile/"+fileName;
     }
 
-
+    //create pdf
 //    @RequestMapping(value="/createPPT",method = RequestMethod.POST)
 //    public String createPPT( HttpServletRequest request,ModelMap map)  {
 //        String slideIdStr = request.getParameter("slideIdArr");
@@ -118,10 +113,15 @@ public class SlideController {
     }
     //search on elasticSearch
     public String[] search(String features) {
+        Stemmer stemmer = new Stemmer();
 
-        String  param = "q=features:"+
-                features.replaceAll("[^a-zA-Z\\s]"," ").replaceAll("\\s+", ",") +
-                "&_source=page,filePath";
+        String[] feature_list = features.replaceAll("[^a-zA-Z\\s]"," ")
+                .replaceAll("\\s+", ",").split(",");
+        String param = "";
+        for (String str : feature_list){
+            param = param + stemmer.stem(str) + ',';
+        }
+        param = "q=features:" + param.substring(0,param.length()-1) + "&_source=page,filePath";
 
         String[] slides_str = new String[1];
         String result = ElasticSearch.sendGet(ElasticSearch.GET_SLIDE_URL, param);

@@ -142,9 +142,6 @@
                 </ul>
             </li>
         </ul>
-        <div id="apply-div">
-            <input id="apply-btn" class="btn btn-default" type="button" value="CREATE" onclick="createPPT()">
-        </div>
     </div>
 
     <div id="slides-content" class="col-xs-7">
@@ -216,57 +213,62 @@
 
 
     </div>
-    <div id="slides-outline" class="col-xs-2 nav">
-        <a id="slides-outline-1" class="thumbnail active" slides_id="1">
-            <span class="navbar-left">1</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg"/>
-
-        </a>
-        <a id="slides-outline-2" class="thumbnail" slides_id="1">
-            <span class="navbar-left">2</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg"/>
-        </a>
-        <a id="slides-outline-3" class="thumbnail" slides_id="1">
-            <span class="navbar-left">3</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-4" class="thumbnail" slides_id="1">
-            <span class="navbar-left">4</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-5" class="thumbnail" slides_id="1">
-            <span class="navbar-left">5</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-6" class="thumbnail" slides_id="1">
-            <span class="navbar-left">6</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-7" class="thumbnail" slides_id="1">
-            <span class="navbar-left">7</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-8" class="thumbnail" slides_id="1">
-            <span class="navbar-left">8</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-9" class="thumbnail" slides_id="1">
-            <span class="navbar-left">9</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-10" class="thumbnail" slides_id="1">
-            <span class="navbar-left">10</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-11" class="thumbnail" slides_id="1">
-            <span class="navbar-left">11</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
-        <a id="slides-outline-12" class="thumbnail" slides_id="1">
-            <span class="navbar-left">12</span>
-            <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-0.jpg" />
-        </a>
+    <div  class="col-xs-2 nav">
+        <div id="slides-outline">
+            <a id="slides-outline-1" class="thumbnail active" slides_id="1">
+                <span class="navbar-left">1</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg"/>
+            </a>
+            <a id="slides-outline-2" class="thumbnail" slides_id="1">
+                <span class="navbar-left">2</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg"/>
+            </a>
+            <a id="slides-outline-3" class="thumbnail" slides_id="1">
+                <span class="navbar-left">3</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-4" class="thumbnail" slides_id="1">
+                <span class="navbar-left">4</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-5" class="thumbnail" slides_id="1">
+                <span class="navbar-left">5</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-6" class="thumbnail" slides_id="1">
+                <span class="navbar-left">6</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-7" class="thumbnail" slides_id="1">
+                <span class="navbar-left">7</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-8" class="thumbnail" slides_id="1">
+                <span class="navbar-left">8</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-9" class="thumbnail" slides_id="1">
+                <span class="navbar-left">9</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-10" class="thumbnail" slides_id="1">
+                <span class="navbar-left">10</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-11" class="thumbnail" slides_id="1">
+                <span class="navbar-left">11</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+            <a id="slides-outline-12" class="thumbnail" slides_id="1">
+                <span class="navbar-left">12</span>
+                <img src="http://7xoiwj.com1.z0.glb.clouddn.com/default-1.jpg" />
+            </a>
+        </div>
+        <div id="apply-div">
+            <input id="apply-btn" class="btn btn-default" type="button" value="CREATE" onclick="createPPT()">
+        </div>
     </div>
+
     <div class = "clearDiv"></div>
 </div>
 

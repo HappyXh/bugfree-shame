@@ -9,10 +9,10 @@ import java.sql.*;
  */
 public class LocalMysql {
     static String driver = "com.mysql.jdbc.Driver";
-//    static String ConnectionString = "jdbc:mysql://localhost:3307/helloworld";
-    static String ConnectionString = "jdbc:mysql://localhost:3306/helloworld";
-//    static String password = "";
-    static String password = "poinThinker";
+    static String ConnectionString = "jdbc:mysql://localhost:3307/helloworld";
+//    static String ConnectionString = "jdbc:mysql://localhost:3306/helloworld";
+    static String password = "";
+//    static String password = "poinThinker";
     static String username = "root";
 
     private Connection conn;

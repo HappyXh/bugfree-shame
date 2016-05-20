@@ -1,4 +1,12 @@
-window.onload = function() {
+$(function(){
+    $(".cp-btn").zclip({
+        path:'scripts/ZeroClipboard.swf', //记得把ZeroClipboard.swf引入到项目中
+        copy:function(){
+            return "http://localhost:8080/bugfree-shame/attachment/"+this.getAttribute("link");
+            //return "www.pointhinker.com/attachment/"+this.getAttribute("link");
+        }
+    });
+
     $("#search-txt").bind('keypress', function (event) {
         if (event.keyCode == "13") {
             $(this).blur();
@@ -50,7 +58,7 @@ window.onload = function() {
 
     })
 
-}
+})
 
 
 function focusOn(element){
@@ -92,4 +100,8 @@ function downloadPPT(slideArr){
     temp.appendChild(opt);
     document.body.appendChild(temp);
     temp.submit();
+}
+function copyToClipBoard(clipBoardContent){
+    //alert("文件地址:http://www.pointhinker.com/attachment/"+clipBoardContent);
+    alert("文件地址:http://www.pointhinker.com/attachment/"+clipBoardContent);
 }

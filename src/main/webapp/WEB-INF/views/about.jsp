@@ -38,8 +38,7 @@
       </p>
 
       <span id="toc4"><h2 >联系我们:</h2></span>
-      <p>QQ: <br>
-        Mail: </p>
+      <p>Email／QQ：1789310276@qq.com</p>
       <br />
       <p>LEON／KEVIN／HAPPY</p>
       <p>Pointhinker联合创始人及新三好学生（好学，好玩，好…美色？美食？，自己填吧！）</p>

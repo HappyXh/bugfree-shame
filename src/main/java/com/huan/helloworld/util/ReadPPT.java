@@ -18,14 +18,18 @@ import java.util.List;
  */
 public class ReadPPT {
     private static String slidesPath = "http://7xoiwj.com1.z0.glb.clouddn.com/";
-//    private static String pptPath = "src/main/webapp/attachment/";
-    private static String pptPath = "/var/lib/tomcat7/webapps/ROOT/attachment/";
+    private static String pptPath = "/Users/happy/Documents/project/IntellijProject/attachment/";
+//    private static String pptPath = "/var/lib/tomcat7/webapps/ROOT/attachment/";
+    private static String tmpFile = "src/main/webapp/tmpFile/";
+//    private static String tmpFile = "/var/lib/tomcat7/webapps/ROOT/tmpFile/";
+    private static String fileStr = "/Users/happy/Documents/test/";
 
-    private static String fileStr = "/Users/happy/Documents/001-020/";
-//    private static String fileStr = "/Users/happy/Documents/test/";
-//    private static String tmpFile = "src/main/webapp/tmpFile/";
-    private static String tmpFile = "/var/lib/tomcat7/webapps/ROOT/tmpFile/";
+//    private static String fileStr = "/Users/happy/Documents/001-020/";
 
+
+
+    public static HashSet<String> stopWords;
+    public static Stemmer stemmer = new Stemmer();
     public static void ppt2Images(XMLSlideShow src, String fileName) throws IOException {
         fileName = fileName.substring(0, fileName.lastIndexOf("."));
         Dimension pgsize = src.getPageSize();
@@ -39,17 +43,17 @@ public class ReadPPT {
         for(XSLFSlide slide : src.getSlides()) {
             slide.draw(graphics);
 
-            FileOutputStream out = new FileOutputStream("src/main/webapp/attachment/tmp.jpg");
+            FileOutputStream out = new FileOutputStream(pptPath+"tmp.jpg");
             javax.imageio.ImageIO.write(img, "jpg", out);
             out.close();
-            File tmpImage = new File("src/main/webapp/attachment/tmp.jpg");
+            File tmpImage = new File(pptPath+"tmp.jpg");
             Qiniu.uploadFile(tmpImage ,fileName + "-" + count + ".jpg");
             tmpImage.delete();
             count += 1;
         }
     }
 
-    public static String extactText(XSLFSlide slide) throws IOException {
+    public static List<String> extactText(XSLFSlide slide) throws IOException {
         String text="";
         for(XSLFShape shape : slide) {
             if (shape instanceof XSLFTextShape) {
@@ -57,9 +61,16 @@ public class ReadPPT {
                 text += txShape.getText();
             }
         }
-        text = text.replaceAll("[^a-zA-Z\\s]", " ");
+        text = text.replaceAll("[^a-zA-Z'\\s]", " ");
         text = text.replaceAll("\\s+", " ").toLowerCase();
-        return text;
+        String[] contents = text.split(" ");
+        List<String> words = new ArrayList<>();
+        for(int i =0; i<contents.length; i++){
+            if(!stopWords.contains(contents[i])){
+                words.add(stemmer.stem(contents[i]));
+            }
+        }
+        return words;
     }
 
     public static void copyFile(String oldPath, String newPath) {
@@ -119,10 +130,19 @@ public class ReadPPT {
             myConn.update(queryStr);
         }
     }
+    public static void uploadDefault() throws IOException, SQLException {
+        LocalMysql myConn=new LocalMysql();
+        String queryStr = "INSERT INTO slides(id,filePath,page) VALUES(1,\"default.pptx\",1) ";
+//        myConn.insert(queryStr);
+        queryStr = "INSERT INTO story(uniName,fileName,slidesIDs) VALUES(" +
+                "\"default.pptx\",\"default\",\"1\")";
+        myConn.insert(queryStr);
+//        File tmpImage = new File(pptPath+"default-1.jpg");
+//        Qiniu.uploadFile(tmpImage, "default-1.jpg");
+    }
 
     public static void upload() throws SQLException, IOException {
         String key;
-        String content;
         XMLSlideShow src = null;
 
         //获取当前词典
@@ -163,27 +183,28 @@ public class ReadPPT {
                         int pageNum=slides.length;
                         //存储slides的Id
                         java.util.List<Integer> slideIds =  new ArrayList<>();
+                        String feature = "";
                         for(int i = 0; i < pageNum; i++){
-                            content=extactText(slides[i]);
-                            String[] words=content.split(" ");
-                            java.util.List<String> str_list = new ArrayList<String>();
-                            for (int j=0; j<words.length; j++) {
-                                if(!str_list.contains(words[j])) {
-                                    str_list.add(words[j]);
-                                }
-                            }
-                            if(str_list.toString() == "[]"){
-                                str_list.add("");
-                            }
+
+                            List<String> words=extactText(slides[i]);
 
                             //将本页Slide上传到数据库
                             uploadSlide2Sql(key, i + 1,
-                                    str_list.toString().substring(1, str_list.toString().length() - 1),
+                                    words.toString().substring(1, words.toString().length() - 1),
                                     myConn);
+                            feature = feature + "," +
+                                    words.toString().substring(1, words.toString().length() - 1);
 
                             //更新词典索引
                             int slideId = myConn.getSlideIDByFileAndPage(key, i-1);
                             slideIds.add(slideId);
+                            java.util.List<String> str_list = new ArrayList<String>();
+                            for (int j=0; j<words.size(); j++) {
+                                if(!str_list.contains(words.get(j))) {
+                                    str_list.add(words.get(j));
+                                }
+                            }
+
                             for(String tmp: str_list){
                                 if(myHash.put(tmp)) {
                                     insertIndex(tmp, myHash.map.size(),slideId,myConn);
@@ -193,7 +214,7 @@ public class ReadPPT {
                         }
                         uploadPPT2Sql(key, subFile1.substring(0, subFile1.lastIndexOf(".")),
                                 slideIds.toString().substring(1, slideIds.toString().length() - 1),
-                                "", myConn);
+                                feature, myConn);
                         ppt2Images(src, key);
                     }
                 }
@@ -228,8 +249,16 @@ public class ReadPPT {
     }
 
     public static void main(String args[]) throws IOException, SQLException {
+//        stopWords = new HashSet<>();
+//        String tempString;
+//        File file = new File("src/main/resources/stopwords.txt");
+//        BufferedReader reader = new BufferedReader(new FileReader(file));
+//        while((tempString = reader.readLine()) != null){
+//            stopWords.add(tempString);
+//        }
 //        upload();
-        System.out.println(System.getProperty("user.dir") );
+//        System.out.println(System.getProperty("user.dir") );
+        uploadDefault();
     }
 
 }

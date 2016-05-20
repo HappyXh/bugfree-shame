@@ -66,12 +66,14 @@ public class ElasticSearch {
     }
     public static void main(String args[]){
 
-        String param = "q=fileName:0&_source=fileName";
-        String result = sendGet(GET_SLIDE_URL, param);
+//        String param = "q=fileName:0&_source=fileName";
+//        String result = sendGet(GET_SLIDE_URL, param);
+        String result = ElasticSearch.sendGet(ElasticSearch.GET_SLIDE_URL, "");
+        result = result.substring(result.indexOf("hits")+6,result.length()-3);
+        result = result.substring(result.indexOf("hits")+6);
 
         System.out.println(result);
-        result = result.substring(result.indexOf("hits")+6,result.length()-3);
-        System.out.println(result.substring(result.indexOf("hits")+6));
+
 
     }
 }

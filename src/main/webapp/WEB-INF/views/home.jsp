@@ -4,6 +4,7 @@
 
 <%@ include file="header.jsp" %>
 <script type="text/javascript" src="<c:url value='/scripts/home.js' />"></script>
+<script type="text/javascript" src="<c:url value='/scripts/jquery.zclip.js' />"></script>
 
 <a id="create_btn" type="button" class="btn btn-info" href="<c:url value='slide' />">Create My Deck</a>
 <%--<div id="logo">--%>
@@ -11,7 +12,7 @@
 <%--</div>--%>
 
 <div id="search-presentation" class="input-group input-group-lg">
-    <input id="search-txt" type="text" class="form-control" placeholder="Search presentations from Pointhinker"
+    <input id="search-txt" type="text" class="form-control" placeholder="Input You Topic, like IBM, BMW..."
            aria-describedby="basic-addon2">
     <span id="search-btn" class="input-group-btn">
         <button class="btn btn-default" type="button">Search!</button>
@@ -27,7 +28,7 @@
               <div class="caption">
                   <div class="actions">
                       <a href="#"><span class="glyphicon glyphicon-heart"></span></a>
-                      <a href="#"><span class="glyphicon glyphicon-share-alt"></span></a>
+                      <a class="cp-btn" link="${story.uniName}"><span class="glyphicon glyphicon-share-alt"></span></a>
                       <a href="attachment/${story.uniName}" ><span class="glyphicon glyphicon-save"></span></a>
                   </div>
                   <div class="story-desc"><span>${story.fileName}</span></div>
